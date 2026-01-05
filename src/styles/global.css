@@ -1,33 +1,52 @@
 @import "tailwindcss";
-@plugin "daisyui";
-
-/* Configuration for DaisyUI 5 
-  This explicitly includes all themes and sets the default behavior.
-*/
-@plugin "daisyui/theme" {
-  name: "light";
-  default: false;
+@plugin "daisyui" {
+  themes: 
+    light --default, 
+    dark --prefersdark, 
+    cupcake, 
+    bumblebee, 
+    emerald, 
+    corporate, 
+    synthwave, 
+    retro, 
+    cyberpunk, 
+    valentine, 
+    halloween, 
+    garden, 
+    forest, 
+    aqua, 
+    lofi, 
+    pastel, 
+    fantasy, 
+    wireframe, 
+    black, 
+    luxury, 
+    dracula, 
+    cmyk, 
+    autumn, 
+    business, 
+    acid, 
+    lemonade, 
+    night, 
+    coffee, 
+    winter, 
+    dim, 
+    nord, 
+    sunset,
+    caramellatte,
+    abyss,
+    silk;
+  logs: false;
 }
 
-@plugin "daisyui/theme" {
-  name: "dark";
-  default: true; /* Sets dark as the CSS-level default */
-}
-
-/* Custom Utility for Content Collections 
-  This mimics the 'prose' class but allows us to style raw markdown content 
-  if we aren't using the official typography plugin yet.
-*/
-@theme {
-  /* Add custom theme extensions here if needed */
-}
-
-/* Base styles 
-*/
-:root {
-  color-scheme: dark;
-}
-
-body {
-  @apply min-h-screen bg-base-100 text-base-content antialiased;
+/* Custom Utilities */
+@layer utilities {
+  /* Utility to hide scrollbar for cleaner UI in some components */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }

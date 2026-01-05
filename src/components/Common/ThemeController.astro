@@ -1,0 +1,64 @@
+---
+// List matches the CSS configuration for consistency
+const themes = [
+  "light", "dark", "cupcake", "bumblebee", "emerald", "corporate", "synthwave", 
+  "retro", "cyberpunk", "valentine", "halloween", "garden", "forest", "aqua", 
+  "lofi", "pastel", "fantasy", "wireframe", "black", "luxury", "dracula", 
+  "cmyk", "autumn", "business", "acid", "lemonade", "night", "coffee", 
+  "winter", "dim", "nord", "sunset", "caramellatte", "abyss", "silk"
+];
+---
+
+<div class="dropdown dropdown-end">
+  <div tabindex="0" role="button" class="btn btn-ghost btn-circle m-1" aria-label="Theme Switcher">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+    </svg>
+  </div>
+  <ul tabindex="0" class="dropdown-content z-[1] p-2 shadow-2xl bg-base-300 rounded-box w-52 max-h-96 overflow-y-auto block no-scrollbar">
+    {themes.map((theme) => (
+      <li>
+        <button
+          class="theme-btn btn btn-sm btn-block btn-ghost justify-start capitalize"
+          data-set-theme={theme}
+        >
+          {theme}
+        </button>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<script>
+  // Client-side logic for theme switching
+  // Using event delegation for better performance
+  const themeContainer = document.querySelector('.dropdown-content');
+  
+  if (themeContainer) {
+    themeContainer.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      const btn = target.closest('.theme-btn');
+      
+      if (btn) {
+        const newTheme = btn.getAttribute('data-set-theme');
+        if (newTheme) {
+          // 1. Set HTML attribute
+          document.documentElement.setAttribute('data-theme', newTheme);
+          
+          // 2. Persist to LocalStorage
+          localStorage.setItem('theme', newTheme);
+          
+          // 3. Log for debugging (as requested)
+          console.info(`[ThemeController] Switched to: ${newTheme}`);
+          
+          // 4. (Optional) Close dropdown by blurring active element
+          if (document.activeElement instanceof HTMLElement) {
+             document.activeElement.blur();
+          }
+        }
+      }
+    });
+  } else {
+    console.warn('[ThemeController] Dropdown content not found in DOM.');
+  }
+</script>

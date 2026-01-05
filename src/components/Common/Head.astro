@@ -1,0 +1,49 @@
+---
+import { SEO } from 'astro-seo';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+}
+
+const { title, description, image } = Astro.props;
+---
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="generator" content={Astro.generator} />
+
+  <SEO
+    title={title}
+    description={description}
+    openGraph={{
+      basic: {
+        title: title,
+        type: "website",
+        image: image || "/placeholder-social.png", // Fallback image needed
+      }
+    }}
+  />
+
+  <script is:inline>
+    (function() {
+      try {
+        const localTheme = localStorage.getItem('theme');
+        const sysTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        // Priority: LocalStorage -> System Preference -> Default (light via CSS)
+        if (localTheme) {
+          document.documentElement.setAttribute('data-theme', localTheme);
+        } else if (sysTheme) {
+          // Optional: You can force a specific default for dark mode users here if 'dark' isn't enough
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) {
+        console.error('Theme loader failed:', e);
+      }
+    })();
+  </script>
+</head>
