@@ -1,0 +1,47 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostItem from '../../components/Blog/PostItem.astro';
+
+// 1. Generate paths for every unique tag found in posts
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+  
+  // Extract all unique tags
+  const uniqueTags = [...new Set(allPosts.map((post) => post.data.tags).flat())].filter(Boolean);
+
+  return uniqueTags.map((tag) => {
+    // Filter posts for this specific tag
+    const filteredPosts = allPosts.filter((post) => 
+      post.data.tags?.includes(tag as string)
+    );
+    
+    return {
+      params: { tag },
+      props: { posts: filteredPosts },
+    };
+  });
+}
+
+const { tag } = Astro.params;
+const { posts } = Astro.props;
+
+// Sort by date descending
+const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title={`Tag: ${tag}`} description={`Articles tagged with ${tag}`}>
+  <section class="max-w-4xl mx-auto">
+    <div class="mb-8 border-b border-base-content/10 pb-4 flex items-baseline gap-4">
+      <h1 class="text-4xl font-bold">#{tag}</h1>
+      <span class="text-base-content/60">{posts.length} articles</span>
+      <a href="/blog" class="ml-auto btn btn-ghost btn-sm">View All Posts</a>
+    </div>
+
+    <ul class="grid gap-6">
+      {sortedPosts.map((post) => (
+        <PostItem post={post} />
+      ))}
+    </ul>
+  </section>
+</BaseLayout>

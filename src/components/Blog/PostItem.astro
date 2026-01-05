@@ -14,14 +14,26 @@ const { post } = Astro.props;
     <h3 class="card-title text-2xl font-bold text-primary group-hover:underline decoration-2 underline-offset-4">
       {post.data.title}
     </h3>
-    <div class="flex items-center gap-2 text-sm text-base-content/60 mb-2">
+    
+    <div class="flex flex-wrap items-center gap-2 text-sm text-base-content/60 mb-2">
       <time datetime={post.data.pubDate.toISOString()}>
         {formatDate(post.data.pubDate)}
       </time>
+      
+      {/* NEW: Render Tags if they exist */}
+      {post.data.tags && post.data.tags.length > 0 && (
+        <div class="flex gap-2 ml-2">
+          {post.data.tags.map((tag) => (
+            <span class="badge badge-sm badge-outline opacity-75">#{tag}</span>
+          ))}
+        </div>
+      )}
     </div>
+
     <p class="text-base-content/80 line-clamp-3">
       {post.data.description}
     </p>
+    
     <div class="card-actions justify-end mt-4">
       <span class="btn btn-sm btn-outline btn-primary">Read Article</span>
     </div>

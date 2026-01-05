@@ -2,6 +2,7 @@
 title: 'Second post'
 description: 'Lorem ipsum dolor sit amet'
 pubDate: 'Jul 15 2022'
+tags: ["astro", "code"]
 heroImage: '../../assets/blog-placeholder-4.jpg'
 ---
 

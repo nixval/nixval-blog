@@ -3,7 +3,7 @@ import '../styles/global.css';
 import Head from '../components/Common/Head.astro';
 import Header from '../components/Common/Header.astro';
 import Footer from '../components/Common/Footer.astro';
-
+import ScrollToTop from '../components/Common/ScrollToTop.astro';
 interface Props {
   title: string;
   description: string;
@@ -25,6 +25,7 @@ const { title, description, image } = Astro.props;
     </main>
     
     <Footer />
+    <ScrollToTop />
     
     <style>
       @keyframes fadeIn {

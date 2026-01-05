@@ -1,11 +1,11 @@
 ---
-import type { CollectionEntry, MarkdownHeading } from 'astro:content'; // Import MarkdownHeading
+import type { CollectionEntry, MarkdownHeading } from 'astro:content'; 
 import { Image } from 'astro:assets';
 import BaseLayout from './BaseLayout.astro';
-import { formatDate, getReadingTime } from '../utils'; // Import getReadingTime
+import { formatDate, getReadingTime } from '../utils'; 
 import CopyCodeButton from '../components/Blog/CopyCodeButton.astro';
-import TableOfContents from '../components/Blog/TableOfContents.astro'; // Import TOC
-
+import TableOfContents from '../components/Blog/TableOfContents.astro'; 
+import ShareButtons from '../components/Blog/ShareButtons.astro'; 
 interface Props {
   title: string;
   description: string;
@@ -76,9 +76,12 @@ const readTime = getReadingTime(readTimeContent);
       <slot name="comments" /> 
     </article>
 
-    <aside class="hidden lg:block relative">
-      <div class="sticky top-24">
-        <TableOfContents headings={headings} />
+<aside class="hidden lg:block relative">
+      <div class="sticky top-24 space-y-8"> <TableOfContents headings={headings} />
+        
+        <div class="pl-4 border-l border-base-content/10">
+          <ShareButtons title={title} description={description} />
+        </div>
       </div>
     </aside>
 

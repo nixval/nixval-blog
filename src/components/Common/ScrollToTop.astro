@@ -1,0 +1,36 @@
+---
+// Client-side component
+---
+
+<button
+  id="scroll-to-top"
+  aria-label="Scroll to top"
+  class="fixed bottom-8 right-8 btn btn-circle btn-primary shadow-lg translate-y-20 opacity-0 transition-all duration-300 z-50"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+</button>
+
+<script>
+  function initScrollToTop() {
+    const btn = document.getElementById('scroll-to-top');
+    if (!btn) return;
+
+    // Show/Hide logic
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        btn.classList.remove('translate-y-20', 'opacity-0');
+      } else {
+        btn.classList.add('translate-y-20', 'opacity-0');
+      }
+    });
+
+    // Click logic
+    btn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  // Init
+  initScrollToTop();
+  document.addEventListener('astro:page-load', initScrollToTop);
+</script>
