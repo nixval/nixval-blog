@@ -1,0 +1,67 @@
+---
+// This component injects a copy button into every code block on the page.
+// It is client-side only.
+---
+
+<script>
+  /**
+   * Copy Code Button Logic
+   * Scans all <pre> blocks and appends a copy button.
+   */
+  function addCopyButtons() {
+    const codeBlocks = document.querySelectorAll('pre');
+
+    codeBlocks.forEach((block) => {
+      // Prevent double injection if function runs twice
+      if (block.querySelector('.copy-code-btn')) return;
+
+      // Create the button container
+      const button = document.createElement('button');
+      button.className = 'copy-code-btn btn btn-sm btn-square btn-ghost absolute top-2 right-2 text-base-content/50 hover:text-base-content hover:bg-base-content/10 z-10 transition-all';
+      button.setAttribute('aria-label', 'Copy code');
+      
+      // Icon: Copy (Lucide)
+      button.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="copy-icon"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="check-icon hidden text-success"><path d="M20 6 9 17l-5-5"/></svg>
+      `;
+
+      // Click Event
+      button.addEventListener('click', async () => {
+        const code = block.querySelector('code');
+        if (!code) return;
+
+        const textToCopy = code.innerText;
+
+        try {
+          await navigator.clipboard.writeText(textToCopy);
+          
+          // Visual Feedback
+          const copyIcon = button.querySelector('.copy-icon');
+          const checkIcon = button.querySelector('.check-icon');
+          
+          if (copyIcon && checkIcon) {
+            copyIcon.classList.add('hidden');
+            checkIcon.classList.remove('hidden');
+            
+            // Revert after 2 seconds
+            setTimeout(() => {
+              copyIcon.classList.remove('hidden');
+              checkIcon.classList.add('hidden');
+            }, 2000);
+          }
+        } catch (err) {
+          console.error('Failed to copy:', err);
+        }
+      });
+
+      block.appendChild(button);
+    });
+  }
+
+  // Init on load
+  addCopyButtons();
+
+  // Re-init on View Transitions (if enabled later)
+  document.addEventListener('astro:page-load', addCopyButtons);
+</script>

@@ -9,6 +9,12 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
 	site: 'https://example.com',
 	integrations: [mdx(), sitemap()],
+  markdown: {
+    shikiConfig: {
+      theme: 'dracula',
+      wrap: true, 
+    },
+  },
   vite: {
     plugins: [
       // Tailwind CSS v4 Plugin

@@ -3,45 +3,14 @@
   themes: 
     light --default, 
     dark --prefersdark, 
-    cupcake, 
-    bumblebee, 
-    emerald, 
-    corporate, 
-    synthwave, 
-    retro, 
-    cyberpunk, 
-    valentine, 
-    halloween, 
-    garden, 
-    forest, 
-    aqua, 
-    lofi, 
-    pastel, 
-    fantasy, 
-    wireframe, 
-    black, 
-    luxury, 
-    dracula, 
-    cmyk, 
-    autumn, 
-    business, 
-    acid, 
-    lemonade, 
-    night, 
-    coffee, 
-    winter, 
-    dim, 
-    nord, 
-    sunset,
-    caramellatte,
-    abyss,
-    silk;
+    cupcake, bumblebee, emerald, corporate, synthwave, retro, cyberpunk, 
+    valentine, halloween, garden, forest, aqua, lofi, pastel, fantasy, 
+    wireframe, black, luxury, dracula, cmyk, autumn, business, acid, 
+    lemonade, night, coffee, winter, dim, nord, sunset, caramellatte, abyss, silk;
   logs: false;
 }
 
-/* Custom Utilities */
 @layer utilities {
-  /* Utility to hide scrollbar for cleaner UI in some components */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
@@ -49,4 +18,73 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+}
+
+@layer components {
+  .prose {
+    @apply text-base-content leading-relaxed;
+  }
+
+  /* HEADINGS */
+  .prose h1, .prose h2, .prose h3, .prose h4 {
+    @apply font-bold text-base-content mt-12 mb-6 scroll-mt-20;
+  }
+  .prose h1 { @apply text-4xl lg:text-5xl border-b border-base-content/10 pb-4; }
+  .prose h2 { @apply text-3xl lg:text-4xl; }
+  .prose h3 { @apply text-2xl lg:text-3xl text-primary; }
+
+  /* LINKS - FIXED HERE */
+  .prose a {
+    @apply text-primary no-underline border-b-2 border-primary/30 transition-all duration-200;
+  }
+  .prose a:hover {
+    /* Removed invalid 'text-primary-focus', added 'brightness-110' for pop effect */
+    @apply bg-primary/10 border-primary text-primary brightness-110 rounded-sm px-1 -mx-1;
+  }
+
+  /* BLOCKQUOTES */
+  .prose blockquote {
+    @apply not-italic border-l-4 border-primary bg-base-200/50 p-6 rounded-r-lg my-8;
+  }
+  .prose blockquote p {
+    @apply my-0 text-base-content/80;
+  }
+
+  /* INLINE CODE */
+  .prose :where(code):not(:where(pre code)) {
+    @apply bg-base-300 text-secondary px-1.5 py-0.5 rounded border border-base-content/10 font-mono text-sm;
+  }
+
+  /* CODE BLOCKS (Pre) - Modified for Copy Button positioning */
+  .prose pre {
+    @apply mockup-code bg-neutral text-neutral-content my-8 min-w-full rounded-box shadow-xl border border-base-content/5 relative overflow-x-hidden;
+  }
+  
+  /* Fix padding inside code blocks */
+  .prose pre > code {
+    @apply block px-6 py-4 bg-transparent text-sm leading-6 font-mono overflow-x-auto;
+  }
+
+  /* LISTS */
+  .prose ul { @apply list-disc list-outside ml-6 my-6 marker:text-primary; }
+  .prose ol { @apply list-decimal list-outside ml-6 my-6 marker:font-bold marker:text-secondary; }
+  .prose li { @apply pl-2 my-2; }
+
+  /* IMAGES */
+  .prose img {
+    @apply rounded-xl shadow-lg my-8 border border-base-content/10 w-full;
+  }
+  
+  /* HORIZONTAL RULE */
+  .prose hr {
+    @apply border-base-content/10 my-12;
+  }
+  
+  /* TABLE */
+  .prose table {
+    @apply table table-zebra w-full my-8 border border-base-content/10 rounded-lg overflow-hidden;
+  }
+  .prose thead { @apply bg-base-200 text-base-content; }
+  .prose th { @apply p-4 font-bold text-left; }
+  .prose td { @apply p-4 border-t border-base-content/5; }
 }
