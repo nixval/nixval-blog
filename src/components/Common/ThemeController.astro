@@ -1,64 +1,76 @@
 ---
-// List matches the CSS configuration for consistency
 const themes = [
-  "light", "dark", "cupcake", "bumblebee", "emerald", "corporate", "synthwave", 
-  "retro", "cyberpunk", "valentine", "halloween", "garden", "forest", "aqua", 
-  "lofi", "pastel", "fantasy", "wireframe", "black", "luxury", "dracula", 
-  "cmyk", "autumn", "business", "acid", "lemonade", "night", "coffee", 
-  "winter", "dim", "nord", "sunset", "caramellatte", "abyss", "silk"
+  "light", "dark", "cupcake", "bumblebee", "emerald", "corporate", 
+  "synthwave", "retro", "cyberpunk", "valentine", "halloween", "garden", 
+  "forest", "aqua", "lofi", "pastel", "fantasy", "wireframe", "black", 
+  "luxury", "dracula", "cmyk", "autumn", "business", "acid", "lemonade", 
+  "night", "coffee", "winter", "dim", "nord", "sunset", "caramellatte",
+  "abyss", "silk"
 ];
 ---
 
 <div class="dropdown dropdown-end">
-  <div tabindex="0" role="button" class="btn btn-ghost btn-circle m-1" aria-label="Theme Switcher">
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  <div tabindex="0" role="button" class="btn btn-ghost btn-circle" aria-label="Change Theme">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
     </svg>
   </div>
-  <ul tabindex="0" class="dropdown-content z-[1] p-2 shadow-2xl bg-base-300 rounded-box w-52 max-h-96 overflow-y-auto block no-scrollbar">
-    {themes.map((theme) => (
-      <li>
-        <button
-          class="theme-btn btn btn-sm btn-block btn-ghost justify-start capitalize"
+  
+  <div tabindex="0" class="dropdown-content bg-base-200 text-base-content rounded-box z-[99] mt-3 w-[280px] md:w-[480px] p-4 shadow-2xl border border-base-content/10">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-[60vh] overflow-y-auto pr-1 no-scrollbar">
+      {themes.map((theme) => (
+        <button 
+          class="theme-btn btn btn-sm btn-ghost justify-between font-normal capitalize border border-base-content/10 hover:border-primary"
           data-set-theme={theme}
         >
-          {theme}
+          <span class="truncate">{theme}</span>
+          <div data-theme={theme} class="flex gap-1 p-1 rounded bg-base-100">
+            <div class="bg-primary size-2 rounded-full"></div>
+            <div class="bg-secondary size-2 rounded-full"></div>
+            <div class="bg-accent size-2 rounded-full"></div>
+            <div class="bg-neutral size-2 rounded-full"></div>
+          </div>
         </button>
-      </li>
-    ))}
-  </ul>
+      ))}
+    </div>
+  </div>
 </div>
 
 <script>
-  // Client-side logic for theme switching
-  // Using event delegation for better performance
-  const themeContainer = document.querySelector('.dropdown-content');
-  
-  if (themeContainer) {
-    themeContainer.addEventListener('click', (e) => {
+  function initThemeController() {
+    const themeController = document.querySelector('.dropdown-content');
+    if (!themeController) return;
+
+    const updateActiveButton = (currentTheme: string) => {
+      document.querySelectorAll('.theme-btn').forEach((btn) => {
+        const btnTheme = btn.getAttribute('data-set-theme');
+        if (btnTheme === currentTheme) {
+          btn.classList.add('btn-active', 'btn-primary');
+          btn.classList.remove('btn-ghost');
+        } else {
+          btn.classList.remove('btn-active', 'btn-primary');
+          btn.classList.add('btn-ghost');
+        }
+      });
+    };
+
+    const savedTheme = localStorage.getItem('theme') || document.documentElement.getAttribute('data-theme') || 'light';
+    updateActiveButton(savedTheme);
+
+    themeController.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
       const btn = target.closest('.theme-btn');
       
       if (btn) {
         const newTheme = btn.getAttribute('data-set-theme');
         if (newTheme) {
-          // 1. Set HTML attribute
           document.documentElement.setAttribute('data-theme', newTheme);
-          
-          // 2. Persist to LocalStorage
           localStorage.setItem('theme', newTheme);
-          
-          // 3. Log for debugging (as requested)
-          console.info(`[ThemeController] Switched to: ${newTheme}`);
-          
-          // 4. (Optional) Close dropdown by blurring active element
-          if (document.activeElement instanceof HTMLElement) {
-             document.activeElement.blur();
-          }
+          updateActiveButton(newTheme);
         }
       }
     });
-  } else {
-    console.warn('[ThemeController] Dropdown content not found in DOM.');
   }
+  initThemeController();
+  document.addEventListener('astro:after-swap', initThemeController);
 </script>

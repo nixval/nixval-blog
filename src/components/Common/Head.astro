@@ -6,8 +6,7 @@ interface Props {
   description: string;
   image?: string;
 }
-
-const { title, description, image } = Astro.props;
+const { title, description, image = "/banner.png" } = Astro.props;
 ---
 
 <head>
@@ -23,8 +22,17 @@ const { title, description, image } = Astro.props;
       basic: {
         title: title,
         type: "website",
-        image: image || "/placeholder-social.png", // Fallback image needed
+        image: image, 
       }
+    }}
+    twitter={{
+      creator: "@username" 
+    }}
+    extend={{
+      meta: [
+        { name: "twitter:image", content: image },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
     }}
   />
 
@@ -33,17 +41,12 @@ const { title, description, image } = Astro.props;
       try {
         const localTheme = localStorage.getItem('theme');
         const sysTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
-        // Priority: LocalStorage -> System Preference -> Default (light via CSS)
         if (localTheme) {
           document.documentElement.setAttribute('data-theme', localTheme);
         } else if (sysTheme) {
-          // Optional: You can force a specific default for dark mode users here if 'dark' isn't enough
           document.documentElement.setAttribute('data-theme', 'dark');
         }
-      } catch (e) {
-        console.error('Theme loader failed:', e);
-      }
+      } catch (e) { console.error(e); }
     })();
   </script>
 </head>

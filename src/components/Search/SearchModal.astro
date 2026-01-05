@@ -1,0 +1,112 @@
+---
+// SearchModal.astro
+// Component for handling search UI using Pagefind
+---
+
+<dialog id="search_modal" class="modal">
+  <div class="modal-box w-11/12 max-w-2xl bg-base-100 h-[60vh] flex flex-col">
+    <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+    </form>
+    
+    <h3 class="font-bold text-lg mb-4">Search</h3>
+    
+    <div id="pagefind-dev-warning" class="hidden alert alert-warning mb-4 shadow-sm">
+      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+      <div>
+        <h3 class="font-bold">Development Mode Detected</h3>
+        <div class="text-xs">
+          Pagefind requires a static build to index content. 
+          Run <code class="bg-base-300 px-1 rounded">pnpm build</code> and <code class="bg-base-300 px-1 rounded">pnpm preview</code> to test search functionality.
+        </div>
+      </div>
+    </div>
+    
+    <div id="pagefind-container" class="flex-grow overflow-y-auto"></div>
+    
+    <div class="modal-action">
+      <form method="dialog">
+        <button class="btn">Close</button>
+      </form>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>
+
+<link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
+<script is:inline src="/pagefind/pagefind-ui.js"></script>
+
+<script is:inline>
+  /**
+   * Search Initialization Script
+   * Handles Pagefind UI loading and development environment detection.
+   */
+  window.addEventListener('DOMContentLoaded', () => {
+    const container = document.querySelector("#pagefind-container");
+    const warning = document.querySelector("#pagefind-dev-warning");
+
+    try {
+      // Check if PagefindUI is loaded (it is only generated after build)
+      if (typeof PagefindUI !== 'undefined') {
+        new PagefindUI({
+          element: "#pagefind-container",
+          showSubResults: true,
+          showImages: false,
+          translations: {
+            placeholder: "Search articles...",
+          }
+        });
+        console.info("[SearchModal] Pagefind initialized successfully.");
+      } else {
+        // Fallback for Dev Mode
+        if (warning) warning.classList.remove("hidden");
+        console.warn("[SearchModal] PagefindUI not found. This is expected in DEV mode.");
+        
+        if (container) {
+          container.innerHTML = `<div class="text-center opacity-50 mt-10">Search index not available in dev mode.</div>`;
+        }
+      }
+    } catch (e) {
+      console.error('[SearchModal] Critical error initializing search:', e);
+    }
+  });
+
+  // Hotkey Listener (Cmd+K / Ctrl+K)
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      const modal = document.getElementById('search_modal');
+      if (modal) {
+        modal.showModal();
+        // Log interaction for debugging
+        console.debug("[SearchModal] Opened via keyboard shortcut");
+      }
+    }
+  });
+</script>
+
+<style is:global>
+  /* * Pagefind Theme Overrides 
+   * Adapts the default Pagefind UI to match DaisyUI variables
+   */
+  :root {
+    --pagefind-ui-scale: 0.8;
+    --pagefind-ui-primary: oklch(var(--p));
+    --pagefind-ui-text: oklch(var(--bc));
+    --pagefind-ui-background: oklch(var(--b1));
+    --pagefind-ui-border: oklch(var(--b3));
+    --pagefind-ui-tag: oklch(var(--b2));
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: var(--rounded-box);
+    --pagefind-ui-font: inherit;
+  }
+  
+  .pagefind-ui__drawer { gap: 1rem !important; }
+  .pagefind-ui__result { 
+    border-bottom: 1px solid oklch(var(--b3)) !important; 
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+</style>
