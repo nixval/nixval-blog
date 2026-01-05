@@ -1,0 +1,56 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostItem from '../../components/Blog/PostItem.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
+
+// Astro Pagination Logic
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = (await getCollection('blog')).sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+  );
+
+  // Split into pages of 6 posts each
+  return paginate(posts, { pageSize: 6 });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+---
+
+<BaseLayout title={`Blog - ${SITE_TITLE}`} description={SITE_DESCRIPTION}>
+  <section class="max-w-4xl mx-auto">
+    <div class="mb-8 border-b border-base-content/10 pb-4">
+      <h1 class="text-4xl font-bold">Blog Archive</h1>
+      <p class="mt-2 text-base-content/60">
+        Page {page.currentPage} of {page.lastPage}
+      </p>
+    </div>
+    
+    <ul class="grid gap-6">
+      {page.data.map((post) => (
+        <PostItem post={post} />
+      ))}
+    </ul>
+
+    <div class="flex justify-center mt-12">
+      <div class="join">
+        {page.url.prev ? (
+          <a href={page.url.prev} class="join-item btn btn-outline">« Previous</a>
+        ) : (
+          <button class="join-item btn btn-outline btn-disabled">« Previous</button>
+        )}
+        
+        <button class="join-item btn btn-outline">
+          Page {page.currentPage}
+        </button>
+        
+        {page.url.next ? (
+          <a href={page.url.next} class="join-item btn btn-outline">Next »</a>
+        ) : (
+          <button class="join-item btn btn-outline btn-disabled">Next »</button>
+        )}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

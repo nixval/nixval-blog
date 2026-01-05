@@ -5,14 +5,14 @@ import BlogPostLayout from '../../layouts/BlogPostLayout.astro';
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
   return posts.map((post) => ({
-    // SAFETY CHECK: Ensure we are passing a valid string, even if logic fails slightly
-    params: { slug: post.id || post.slug },
+    params: { slug: post.id },
     props: { post },
   }));
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+// render() returns headings along with Content
+const { Content, headings } = await render(post);
 ---
 
 <BlogPostLayout 
@@ -21,6 +21,8 @@ const { Content } = await render(post);
   pubDate={post.data.pubDate}
   updatedDate={post.data.updatedDate}
   heroImage={post.data.heroImage}
+  headings={headings}       
+  readTimeContent={post.body} 
 >
   <Content />
 </BlogPostLayout>

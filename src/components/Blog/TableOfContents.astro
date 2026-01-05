@@ -1,0 +1,30 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+
+// Filter out H1 (usually the title) and keep only H2 and H3 for cleaner TOC
+const tocHeadings = headings.filter((h) => h.depth > 1 && h.depth <= 3);
+---
+
+{tocHeadings.length > 0 && (
+  <nav class="toc-container p-4 bg-base-200/50 rounded-xl border border-base-content/5 text-sm">
+    <h2 class="font-bold mb-3 text-base-content/70 uppercase tracking-wider text-xs">On This Page</h2>
+    <ul class="flex flex-col gap-2">
+      {tocHeadings.map((heading) => (
+        <li class={`toc-item ${heading.depth === 3 ? 'pl-4' : ''}`}>
+          <a 
+            href={`#${heading.slug}`} 
+            class="link link-hover text-base-content/80 hover:text-primary transition-colors block truncate"
+          >
+            {heading.text}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}
