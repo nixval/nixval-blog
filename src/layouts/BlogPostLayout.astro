@@ -21,6 +21,7 @@ interface Props {
   prevPost?: CollectionEntry<'blog'> | null;
   nextPost?: CollectionEntry<'blog'> | null;
   relatedPosts?: CollectionEntry<'blog'>[];
+  id?: string;
 }
 
 const { 
@@ -34,7 +35,8 @@ const {
   tags = [],
   prevPost,
   nextPost,
-  relatedPosts = []
+  relatedPosts = [],
+  id = ''
 } = Astro.props;
 
 // ... (Date logic kept same) ...
@@ -48,20 +50,28 @@ const readTime = getReadingTime(readTimeContent);
 ---
 
 <BaseLayout title={title} description={description}>
-  
+      <Breadcrumbs />
+  <header class="mb-10 text-center">
+    <h1 
+      class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight" 
+      transition:name={`title-${id}`}
+    >
+      {title}
+    </h1>
+  </header>
   <div class="grid grid-cols-1 lg:grid-cols-[1fr_250px] gap-8 max-w-6xl mx-auto">
-    
-    <article class="min-w-0">
-      
- <Breadcrumbs />
 
-      
+    <article class="min-w-0">
+
+  
+
+
       <div class="prose prose-lg max-w-none prose-headings:font-bold prose-a:text-primary hover:prose-a:text-primary-focus">
         <slot />
       </div>
 
       <CopyCodeButton /> 
-      
+
       <div class="lg:hidden mt-8">
         <ShareButtons title={title} description={description} />
       </div>
@@ -72,22 +82,22 @@ const readTime = getReadingTime(readTimeContent);
       <nav class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
         {/* Previous (Older) Post */}
         {prevPost ? (
-          <a href={`/blog/${prevPost.id}/`} class="group flex flex-col p-4 rounded-xl border border-base-content/10 hover:border-primary/50 hover:bg-base-200/50 transition-all text-right md:text-left">
-            <span class="text-xs font-bold text-base-content/50 uppercase tracking-wider mb-1">« Previous Article</span>
-            <span class="font-bold text-lg group-hover:text-primary transition-colors line-clamp-2">{prevPost.data.title}</span>
-          </a>
+        <a href={`/blog/${prevPost.id}/`} class="group flex flex-col p-4 rounded-xl border border-base-content/10 hover:border-primary/50 hover:bg-base-200/50 transition-all text-right md:text-left">
+          <span class="text-xs font-bold text-base-content/50 uppercase tracking-wider mb-1">« Previous Article</span>
+          <span class="font-bold text-lg group-hover:text-primary transition-colors line-clamp-2">{prevPost.data.title}</span>
+        </a>
         ) : (
-          <div class="hidden md:block"></div> /* Spacer */
-        )}
+        <div class="hidden md:block"></div> /* Spacer */
+      )}
 
         {/* Next (Newer) Post */}
         {nextPost ? (
-          <a href={`/blog/${nextPost.id}/`} class="group flex flex-col p-4 rounded-xl border border-base-content/10 hover:border-primary/50 hover:bg-base-200/50 transition-all text-right">
-            <span class="text-xs font-bold text-base-content/50 uppercase tracking-wider mb-1">Next Article »</span>
-            <span class="font-bold text-lg group-hover:text-primary transition-colors line-clamp-2">{nextPost.data.title}</span>
-          </a>
+        <a href={`/blog/${nextPost.id}/`} class="group flex flex-col p-4 rounded-xl border border-base-content/10 hover:border-primary/50 hover:bg-base-200/50 transition-all text-right">
+          <span class="text-xs font-bold text-base-content/50 uppercase tracking-wider mb-1">Next Article »</span>
+          <span class="font-bold text-lg group-hover:text-primary transition-colors line-clamp-2">{nextPost.data.title}</span>
+        </a>
         ) : (
-          <div></div>
+        <div></div>
         )}
       </nav>
 
@@ -105,25 +115,25 @@ const readTime = getReadingTime(readTimeContent);
     <aside class="hidden lg:block relative">
       <div class="sticky top-24 space-y-8">
         <TableOfContents headings={headings} />
-        
+
         <div class="pl-4 border-l border-base-content/10">
           <ShareButtons title={title} description={description} />
         </div>
 
         {tags.length > 0 && (
-          <div class="pl-4 border-l border-base-content/10">
-             <h3 class="text-xs font-bold uppercase tracking-wider text-base-content/50 mb-3">Topics</h3>
-             <div class="flex flex-wrap gap-2">
-               {tags.map((tag) => (
-                 <a 
-                   href={`/tags/${tag}`} 
-                   class="badge badge-outline hover:badge-primary transition-colors cursor-pointer no-underline"
-                 >
-                   #{tag}
-                 </a>
-               ))}
-             </div>
+        <div class="pl-4 border-l border-base-content/10">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-base-content/50 mb-3">Topics</h3>
+          <div class="flex flex-wrap gap-2">
+            {tags.map((tag) => (
+            <a 
+              href={`/tags/${tag}`} 
+              class="badge badge-outline hover:badge-primary transition-colors cursor-pointer no-underline"
+            >
+              #{tag}
+            </a>
+            ))}
           </div>
+        </div>
         )}
       </div>
     </aside>

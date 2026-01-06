@@ -1,9 +1,11 @@
 ---
 import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
 import Head from '../components/Common/Head.astro';
 import Header from '../components/Common/Header.astro';
 import Footer from '../components/Common/Footer.astro';
 import ScrollToTop from '../components/Common/ScrollToTop.astro';
+
 interface Props {
   title: string;
   description: string;
@@ -17,22 +19,57 @@ const { title, description, image } = Astro.props;
 <html lang="en">
   <Head title={title} description={description} image={image} />
   
-  <body class="flex flex-col min-h-screen opacity-0 animate-fade-in">
+  <ClientRouter />
+
+  <body class="flex flex-col min-h-screen antialiased overflow-x-hidden">
     <Header />
     
     <main class="flex-grow container mx-auto px-4 py-8">
-      <slot />
+      <div transition:animate="fade">
+        <slot />
+      </div>
     </main>
     
     <Footer />
     <ScrollToTop />
+
+    <script is:inline>
+      // 1. Log Lifecycle Events
+      document.addEventListener('astro:before-preparation', () => {
+        console.log('🚀 [Router] Navigating...');
+        // Show loading bar
+        document.documentElement.classList.add('is-loading');
+      });
+
+      document.addEventListener('astro:after-swap', () => {
+        console.log('🔄 [Router] Content Swapped (Theme should be restored now)');
+      });
+
+      document.addEventListener('astro:page-load', () => {
+        console.log('✅ [Router] Page Loaded (Scripts Initialized)');
+        // Hide loading bar
+        document.documentElement.classList.remove('is-loading');
+      });
+    </script>
     
-    <style>
-      @keyframes fadeIn {
-        to { opacity: 1; }
+    <style is:global>
+      /* Loading Bar */
+      html::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 3px;
+        background-color: oklch(var(--p)); /* Primary Color */
+        z-index: 9999;
+        transition: width 0.2s ease, opacity 0.2s ease;
+        opacity: 0;
       }
-      body {
-        animation: fadeIn 0.2s ease-in forwards;
+      
+      html.is-loading::before {
+        width: 70%; /* Fake progress */
+        opacity: 1;
       }
     </style>
   </body>

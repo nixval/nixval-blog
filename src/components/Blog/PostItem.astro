@@ -18,14 +18,11 @@ const isDraft = post.data.draft;
   */}
   <div class="card-body p-6">
     
-    <h3 class="card-title text-2xl font-bold text-primary group-hover:underline decoration-2 underline-offset-4">
-      {/* STRETCHED LINK TECHNIQUE:
-         1. Put the main link here inside the title.
-         2. 'before:absolute before:inset-0' makes this link cover the ENTIRE card.
-         3. 'focus:outline-none' is for accessibility/visual cleanup.
-      */}
+<h3 class="card-title text-2xl font-bold text-primary group-hover:underline decoration-2 underline-offset-4">
       <a href={`/blog/${post.id}/`} class="before:absolute before:inset-0 focus:outline-none">
-        {post.data.title}
+        <span transition:name={`title-${post.id}`}>
+          {post.data.title}
+        </span>
       </a>
       
       {/* Draft Badge inside Title */}

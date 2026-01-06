@@ -76,11 +76,10 @@ const relatedPosts = allPosts
   headings={headings}       
   readTimeContent={post.body}
   tags={post.data.tags}
-  
-  /* New Props */
   prevPost={prevPost}
   nextPost={nextPost}
   relatedPosts={relatedPosts}
+  id={post.id}
 >
   <Content />
 </BlogPostLayout>
