@@ -3,15 +3,14 @@ import type { GetStaticPaths } from "astro";
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostItem from '../../components/Blog/PostItem.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
 import Breadcrumbs from '../../components/Common/Breadcrumbs.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
 
-// Astro Pagination Logic
 export const getStaticPaths = (async ({ paginate }) => {
   const allPosts = await getCollection('blog');
   
+  // Logic: Filter out drafts in production
   const livePosts = allPosts.filter((post) => {
-    // Filter drafts in production
     if (import.meta.env.PROD && post.data.draft === true) return false;
     return true;
   });
@@ -20,38 +19,44 @@ export const getStaticPaths = (async ({ paginate }) => {
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
   );
 
-  return paginate(sortedPosts, { pageSize: 6 });
+  // PAGINATION SIZE: 
+  // Changed from 6 to 9 or 12 so the grid (3 columns) looks balanced (divisible by 3)
+  return paginate(sortedPosts, { pageSize: 9 });
 }) satisfies GetStaticPaths;
+
 const { page } = Astro.props;
 ---
 
 <BaseLayout title={`Blog - ${SITE_TITLE}`} description={SITE_DESCRIPTION}>
-  <section class="max-w-4xl mx-auto">
+  <section class="max-w-7xl mx-auto px-4">
+    
     <Breadcrumbs />
-    <div class="mb-8 border-b border-base-content/10 pb-4">
-      <h1 class="text-4xl font-bold">Blog Archive</h1>
-      <p class="mt-2 text-base-content/60">
-        Page {page.currentPage} of {page.lastPage}
+
+    <div class="mb-12 border-b border-base-content/10 pb-6">
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">Blog Archive</h1>
+      <p class="text-lg text-base-content/60 max-w-2xl">
+        Explore thoughts on software engineering, philosophy, and system architecture.
+        Page {page.currentPage} of {page.lastPage}.
       </p>
     </div>
     
-    <ul class="grid gap-6">
+<ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {page.data.map((post) => (
-        <PostItem post={post} />
+        // 'h-full' ensures the list item stretches to match the tallest neighbor
+        <div class="h-full">
+            <PostItem post={post} />
+        </div>
       ))}
     </ul>
 
-    <div class="flex justify-center mt-12">
-      <div class="join">
+    {/* Pagination Controls */}
+    <div class="flex justify-center mt-16">
+      <div class="join grid grid-cols-2 w-full max-w-xs">
         {page.url.prev ? (
           <a href={page.url.prev} class="join-item btn btn-outline">« Previous</a>
         ) : (
           <button class="join-item btn btn-outline btn-disabled">« Previous</button>
         )}
-        
-        <button class="join-item btn btn-outline">
-          Page {page.currentPage}
-        </button>
         
         {page.url.next ? (
           <a href={page.url.next} class="join-item btn btn-outline">Next »</a>
@@ -59,6 +64,10 @@ const { page } = Astro.props;
           <button class="join-item btn btn-outline btn-disabled">Next »</button>
         )}
       </div>
+    </div>
+
+    <div class="text-center mt-4 text-xs text-base-content/40 font-mono">
+        Showing {page.start + 1}-{page.end + 1} of {page.total} posts
     </div>
   </section>
 </BaseLayout>

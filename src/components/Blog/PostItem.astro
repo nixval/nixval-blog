@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { Image } from 'astro:assets'; // Import Image Component
+import { Image } from 'astro:assets';
 import { formatDate } from '../../utils';
 
 interface Props {
@@ -13,13 +13,15 @@ const isDraft = post.data.draft;
 const heroImage = post.data.heroImage;
 ---
 
-<li class={`card bg-base-200 hover:bg-base-300 transition-colors duration-300 shadow-sm hover:shadow-md relative group ${isDraft ? 'opacity-70 border-2 border-warning border-dashed' : ''}`}>
+{/* FIX HEIGHT: 
+  1. Added 'h-full' to the <li> class so it fills the Grid cell.
+  2. The card is a flex container by default (daisyUI).
+*/}
+<li class={`card bg-base-200 hover:bg-base-300 transition-colors duration-300 shadow-sm hover:shadow-md relative group h-full ${isDraft ? 'opacity-70 border-2 border-warning border-dashed' : ''}`}>
   
-  {/* HERO IMAGE SECTION */}
+  {/* HERO IMAGE */}
   {heroImage && (
-    <figure class="aspect-video w-full overflow-hidden rounded-t-box">
-      {/* LOGIC: Handle both Image Metadata (from relative src) and String (from public/)
-      */}
+    <figure class="aspect-video w-full overflow-hidden rounded-t-box shrink-0">
       {typeof heroImage === 'object' ? (
         <Image 
           src={heroImage} 
@@ -38,9 +40,13 @@ const heroImage = post.data.heroImage;
     </figure>
   )}
 
-  <div class="card-body p-6">
+  {/* FIX INTERNAL LAYOUT:
+    1. 'flex flex-col' ensures vertical stacking.
+    2. 'h-full' makes the body fill the card.
+  */}
+  <div class="card-body p-6 flex flex-col h-full">
     
-    <h3 class="card-title text-2xl font-bold text-primary group-hover:underline decoration-2 underline-offset-4">
+    <h3 class="card-title text-2xl font-bold text-primary group-hover:underline decoration-2 underline-offset-4 mb-2">
       <a href={`/blog/${post.id}/`} class="before:absolute before:inset-0 focus:outline-none">
         <span transition:name={`title-${post.id}`}>
           {post.data.title}
@@ -49,7 +55,7 @@ const heroImage = post.data.heroImage;
       {isDraft && <span class="badge badge-warning font-mono text-xs z-20 relative">DRAFT</span>}
     </h3>
 
-    <div class="flex flex-wrap items-center gap-y-2 gap-x-4 text-sm text-base-content/60 mb-2 relative z-10">
+    <div class="flex flex-wrap items-center gap-y-2 gap-x-4 text-sm text-base-content/60 mb-4 relative z-10">
       <time datetime={post.data.pubDate.toISOString()}>
         {formatDate(post.data.pubDate)}
       </time>
@@ -68,13 +74,12 @@ const heroImage = post.data.heroImage;
       )}
     </div>
 
-    <p class="text-base-content/80 line-clamp-3 mb-4">
+    {/* FIX DESCRIPTION:
+       1. 'flex-grow' pushes the action button to the bottom.
+       2. 'mb-4' gives breathing room before the button.
+    */}
+    <p class="text-base-content/80 line-clamp-3 mb-4 flex-grow">
       {post.data.description}
     </p>
-    
-    <div class="card-actions justify-end mt-auto pointer-events-none">
-      <span class="btn btn-sm btn-outline btn-primary group-hover:btn-active">Read Article</span>
-    </div>
-
   </div>
 </li>
