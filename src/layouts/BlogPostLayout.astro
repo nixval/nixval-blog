@@ -8,6 +8,7 @@ import TableOfContents from '../components/Blog/TableOfContents.astro';
 import ShareButtons from '../components/Blog/ShareButtons.astro';
 import RelatedPosts from '../components/Blog/RelatedPosts.astro';
 import Breadcrumbs from '../components/Common/Breadcrumbs.astro';
+import ImageZoom from '../components/Blog/ImageZoom.astro';
 
 interface Props {
   title: string;
@@ -186,6 +187,7 @@ const ogImage = new URL(`/blog/${id}/og.png`, Astro.site);
         )}
       </div>
     </aside>
-
+  
   </div>
+  <ImageZoom />
 </BaseLayout>

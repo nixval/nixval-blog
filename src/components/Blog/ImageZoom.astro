@@ -1,0 +1,26 @@
+---
+// No props needed, just client-side logic
+---
+
+<script>
+  import mediumZoom from 'medium-zoom';
+
+  function initZoom() {
+    // Select all images inside the typography content (.prose img)
+    // We create a zoom instance with a dark background for focus
+    const zoom = mediumZoom('.prose img', {
+      margin: 24,
+      background: 'rgba(0, 0, 0, 0.9)', // Dark overlay
+      scrollOffset: 0,
+    });
+    
+    // Optional: Add a custom class to zoomed images for styling
+    // zoom.on('open', event => { ... });
+  }
+
+  // Run on initial load
+  initZoom();
+
+  // Run on View Transitions navigation (Re-attach listeners)
+  document.addEventListener('astro:page-load', initZoom);
+</script>
