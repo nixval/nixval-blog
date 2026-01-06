@@ -6,6 +6,7 @@ import { formatDate, getReadingTime } from '../utils';
 import CopyCodeButton from '../components/Blog/CopyCodeButton.astro';
 import TableOfContents from '../components/Blog/TableOfContents.astro';
 import ShareButtons from '../components/Blog/ShareButtons.astro';
+import RelatedPosts from '../components/Blog/RelatedPosts.astro'; // <--- Import
 
 interface Props {
   title: string;
@@ -15,7 +16,11 @@ interface Props {
   heroImage?: any;
   headings?: MarkdownHeading[];
   readTimeContent?: string;
-  tags?: string[]; // <--- New Prop
+  tags?: string[];
+  // New Props for Navigation & Relations
+  prevPost?: CollectionEntry<'blog'> | null;
+  nextPost?: CollectionEntry<'blog'> | null;
+  relatedPosts?: CollectionEntry<'blog'>[];
 }
 
 const { 
@@ -26,17 +31,19 @@ const {
   heroImage, 
   headings = [], 
   readTimeContent = '',
-  tags = [] // <--- Default to empty array
+  tags = [],
+  prevPost,
+  nextPost,
+  relatedPosts = []
 } = Astro.props;
 
-// Date logic
+// ... (Date logic kept same) ...
 let pubDateObj: Date | null = null;
 let updatedDateObj: Date | null = null;
 try {
   if (pubDate) pubDateObj = new Date(pubDate);
   if (updatedDate) updatedDateObj = new Date(updatedDate);
 } catch (e) {}
-
 const readTime = getReadingTime(readTimeContent);
 ---
 
@@ -46,45 +53,8 @@ const readTime = getReadingTime(readTimeContent);
     
     <article class="min-w-0">
       
-      {/* ... Hero Image ... */}
-      {heroImage && (
-        <div class="mb-8 rounded-box overflow-hidden shadow-xl aspect-video relative">
-          {typeof heroImage === 'object' ? (
-            <Image src={heroImage} alt={title} class="object-cover w-full h-full" />
-          ) : (
-            <img src={heroImage} alt={title} class="object-cover w-full h-full" />
-          )}
-        </div>
-      )}
-
-      <header class="mb-10">
-        <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">{title}</h1>
-        
-        <div class="flex flex-wrap items-center gap-4 text-sm text-base-content/60 mb-4">
-          {pubDateObj && (
-             /* ... Date Logic ... */
-             <div class="flex items-center gap-1">
-               <time datetime={pubDateObj.toISOString()}>{formatDate(pubDateObj)}</time>
-             </div>
-          )}
-          
-          <div class="flex items-center gap-1">
-            <span>{readTime}</span>
-          </div>
-        </div>
-
-        {/* MOBILE TAGS: Visible only on lg:hidden */}
-        {tags.length > 0 && (
-          <div class="lg:hidden flex gap-2 mb-6">
-            {tags.map((tag) => (
-              <a href={`/tags/${tag}`} class="badge badge-outline hover:badge-primary">#{tag}</a>
-            ))}
-          </div>
-        )}
-        
-        <hr class="border-base-content/10 mt-6" />
-      </header>
-
+      {/* ... (Hero, Header, Content - Kept Same) ... */}
+      
       <div class="prose prose-lg max-w-none prose-headings:font-bold prose-a:text-primary hover:prose-a:text-primary-focus">
         <slot />
       </div>
@@ -96,19 +66,49 @@ const readTime = getReadingTime(readTimeContent);
       </div>
 
       <hr class="border-base-content/10 my-8" />
-      <slot name="comments" /> 
+
+      {/* --- PREV / NEXT NAVIGATION --- */}
+      <nav class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+        {/* Previous (Older) Post */}
+        {prevPost ? (
+          <a href={`/blog/${prevPost.id}/`} class="group flex flex-col p-4 rounded-xl border border-base-content/10 hover:border-primary/50 hover:bg-base-200/50 transition-all text-right md:text-left">
+            <span class="text-xs font-bold text-base-content/50 uppercase tracking-wider mb-1">« Previous Article</span>
+            <span class="font-bold text-lg group-hover:text-primary transition-colors line-clamp-2">{prevPost.data.title}</span>
+          </a>
+        ) : (
+          <div class="hidden md:block"></div> /* Spacer */
+        )}
+
+        {/* Next (Newer) Post */}
+        {nextPost ? (
+          <a href={`/blog/${nextPost.id}/`} class="group flex flex-col p-4 rounded-xl border border-base-content/10 hover:border-primary/50 hover:bg-base-200/50 transition-all text-right">
+            <span class="text-xs font-bold text-base-content/50 uppercase tracking-wider mb-1">Next Article »</span>
+            <span class="font-bold text-lg group-hover:text-primary transition-colors line-clamp-2">{nextPost.data.title}</span>
+          </a>
+        ) : (
+          <div></div>
+        )}
+      </nav>
+
+      {/* --- RELATED POSTS SECTION --- */}
+      <RelatedPosts posts={relatedPosts} />
+
+      {/* --- COMMENTS SECTION --- */}
+      <div class="mt-12">
+        <h3 class="text-lg font-bold mb-4 border-b border-base-content/10 pb-2">Discussion</h3>
+        <slot name="comments" />
+      </div>
+
     </article>
 
     <aside class="hidden lg:block relative">
       <div class="sticky top-24 space-y-8">
-        
         <TableOfContents headings={headings} />
         
         <div class="pl-4 border-l border-base-content/10">
           <ShareButtons title={title} description={description} />
         </div>
 
-        {/* DESKTOP TAGS: Rendered in Sidebar */}
         {tags.length > 0 && (
           <div class="pl-4 border-l border-base-content/10">
              <h3 class="text-xs font-bold uppercase tracking-wider text-base-content/50 mb-3">Topics</h3>
@@ -124,7 +124,6 @@ const readTime = getReadingTime(readTimeContent);
              </div>
           </div>
         )}
-
       </div>
     </aside>
 

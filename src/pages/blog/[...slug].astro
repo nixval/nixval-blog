@@ -11,8 +11,50 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-// render() returns headings along with Content
 const { Content, headings } = await render(post);
+
+// --- LOGIC: Get Previous/Next & Related Posts ---
+const allPosts = (await getCollection('blog')).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const currentPostIndex = allPosts.findIndex((p) => p.id === post.id);
+
+// Previous Post (Older)
+const prevPost = currentPostIndex < allPosts.length - 1 
+  ? allPosts[currentPostIndex + 1] 
+  : null;
+
+// Next Post (Newer)
+const nextPost = currentPostIndex > 0 
+  ? allPosts[currentPostIndex - 1] 
+  : null;
+
+// Related Posts Logic
+// 1. Filter out current post
+// 2. Find posts that share at least one tag
+// 3. Sort by number of shared tags (relevance), then by date
+const currentTags = post.data.tags || [];
+const relatedPosts = allPosts
+  .filter((p) => p.id !== post.id) // Exclude current
+  .map((p) => {
+    const otherTags = p.data.tags || [];
+    const sharedTags = currentTags.filter((tag) => otherTags.includes(tag));
+    return {
+      ...p,
+      sharedTagCount: sharedTags.length,
+    };
+  })
+  .filter((p) => p.sharedTagCount > 0) // Must share at least one tag
+  .sort((a, b) => {
+    // Primary sort: Most shared tags
+    if (b.sharedTagCount !== a.sharedTagCount) {
+      return b.sharedTagCount - a.sharedTagCount;
+    }
+    // Secondary sort: Recent date
+    return b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
+  })
+  .slice(0, 3); // Take top 3
 ---
 
 <BlogPostLayout 
@@ -22,8 +64,13 @@ const { Content, headings } = await render(post);
   updatedDate={post.data.updatedDate}
   heroImage={post.data.heroImage}
   headings={headings}       
-  readTimeContent={post.body} 
+  readTimeContent={post.body}
   tags={post.data.tags}
+  
+  /* New Props */
+  prevPost={prevPost}
+  nextPost={nextPost}
+  relatedPosts={relatedPosts}
 >
   <Content />
 </BlogPostLayout>
