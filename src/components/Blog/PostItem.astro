@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets'; // Import Image Component
 import { formatDate } from '../../utils';
 
 interface Props {
@@ -9,23 +10,42 @@ interface Props {
 const { post } = Astro.props;
 const tags = post.data.tags || [];
 const isDraft = post.data.draft;
+const heroImage = post.data.heroImage;
 ---
 
 <li class={`card bg-base-200 hover:bg-base-300 transition-colors duration-300 shadow-sm hover:shadow-md relative group ${isDraft ? 'opacity-70 border-2 border-warning border-dashed' : ''}`}>
   
-  {/* FIX: Use 'div' instead of 'a' for the wrapper. 
-      Nesting <a> inside <a> destroys the layout. 
-  */}
+  {/* HERO IMAGE SECTION */}
+  {heroImage && (
+    <figure class="aspect-video w-full overflow-hidden rounded-t-box">
+      {/* LOGIC: Handle both Image Metadata (from relative src) and String (from public/)
+      */}
+      {typeof heroImage === 'object' ? (
+        <Image 
+          src={heroImage} 
+          alt={post.data.title} 
+          width={720}
+          height={360}
+          class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+        />
+      ) : (
+        <img 
+          src={heroImage} 
+          alt={post.data.title} 
+          class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+        />
+      )}
+    </figure>
+  )}
+
   <div class="card-body p-6">
     
-<h3 class="card-title text-2xl font-bold text-primary group-hover:underline decoration-2 underline-offset-4">
+    <h3 class="card-title text-2xl font-bold text-primary group-hover:underline decoration-2 underline-offset-4">
       <a href={`/blog/${post.id}/`} class="before:absolute before:inset-0 focus:outline-none">
         <span transition:name={`title-${post.id}`}>
           {post.data.title}
         </span>
       </a>
-      
-      {/* Draft Badge inside Title */}
       {isDraft && <span class="badge badge-warning font-mono text-xs z-20 relative">DRAFT</span>}
     </h3>
 
@@ -34,11 +54,6 @@ const isDraft = post.data.draft;
         {formatDate(post.data.pubDate)}
       </time>
 
-      {/* TAGS: 
-          'relative z-10' is CRITICAL here. 
-          It ensures these buttons sit physically ON TOP of the 'stretched link' layer created above.
-          Without this, clicking a tag would open the article instead.
-      */}
       {tags.length > 0 && (
         <div class="flex flex-wrap gap-2">
           {tags.map((tag) => (

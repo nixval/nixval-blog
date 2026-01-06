@@ -24,7 +24,8 @@ interface Props {
   id?: string;
 }
 
-const { 
+const {
+  id,
   title, 
   description, 
   pubDate, 
@@ -36,7 +37,6 @@ const {
   prevPost,
   nextPost,
   relatedPosts = [],
-  id = ''
 } = Astro.props;
 
 // ... (Date logic kept same) ...
@@ -47,9 +47,10 @@ try {
   if (updatedDate) updatedDateObj = new Date(updatedDate);
 } catch (e) {}
 const readTime = getReadingTime(readTimeContent);
+const ogImage = new URL(`/blog/${id}/og.png`, Astro.site);
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} image={ogImage.toString()}>
       <Breadcrumbs />
   <header class="mb-10 text-center">
     <h1 
