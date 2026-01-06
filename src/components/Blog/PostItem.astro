@@ -8,19 +8,28 @@ interface Props {
 
 const { post } = Astro.props;
 const tags = post.data.tags || [];
+const isDraft = post.data.draft;
 ---
 
-<li class="card bg-base-200 hover:bg-base-300 transition-colors duration-300 shadow-sm hover:shadow-md relative group">
+<li class={`card bg-base-200 hover:bg-base-300 transition-colors duration-300 shadow-sm hover:shadow-md relative group ${isDraft ? 'opacity-70 border-2 border-warning border-dashed' : ''}`}>
+  
+  {/* FIX: Use 'div' instead of 'a' for the wrapper. 
+      Nesting <a> inside <a> destroys the layout. 
+  */}
   <div class="card-body p-6">
     
     <h3 class="card-title text-2xl font-bold text-primary group-hover:underline decoration-2 underline-offset-4">
-      {/* THE MAIN LINK:
-         1. 'before:absolute before:inset-0' makes this link cover the entire card.
-         2. 'focus:outline-none' prevents double focus rings.
+      {/* STRETCHED LINK TECHNIQUE:
+         1. Put the main link here inside the title.
+         2. 'before:absolute before:inset-0' makes this link cover the ENTIRE card.
+         3. 'focus:outline-none' is for accessibility/visual cleanup.
       */}
       <a href={`/blog/${post.id}/`} class="before:absolute before:inset-0 focus:outline-none">
         {post.data.title}
       </a>
+      
+      {/* Draft Badge inside Title */}
+      {isDraft && <span class="badge badge-warning font-mono text-xs z-20 relative">DRAFT</span>}
     </h3>
 
     <div class="flex flex-wrap items-center gap-y-2 gap-x-4 text-sm text-base-content/60 mb-2 relative z-10">
@@ -28,8 +37,10 @@ const tags = post.data.tags || [];
         {formatDate(post.data.pubDate)}
       </time>
 
-      {/* CLICKABLE TAGS 
-          We add 'relative z-10' to ensure they sit ON TOP of the card link.
+      {/* TAGS: 
+          'relative z-10' is CRITICAL here. 
+          It ensures these buttons sit physically ON TOP of the 'stretched link' layer created above.
+          Without this, clicking a tag would open the article instead.
       */}
       {tags.length > 0 && (
         <div class="flex flex-wrap gap-2">

@@ -3,8 +3,18 @@ import { getCollection, render } from 'astro:content';
 import BlogPostLayout from '../../layouts/BlogPostLayout.astro';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
-  return posts.map((post) => ({
+const posts = await getCollection('blog');
+  
+  // LOGIC: Filter out drafts ONLY in production build
+  // In 'npm run dev', import.meta.env.PROD is false, so we see everything.
+  const livePosts = posts.filter((post) => {
+    if (import.meta.env.PROD && post.data.draft === true) {
+      return false;
+    }
+    return true;
+  });
+
+  return livePosts.map((post) => ({
     params: { slug: post.id },
     props: { post },
   }));
