@@ -1,0 +1,56 @@
+---
+title: "The Ultimate Kitchen Sink Test (MDX)"
+description: "Testing every single feature of the blog: Math, Admonitions, External Images, and Components."
+pubDate: "2024-01-05"
+heroImage: "https://images.pexels.com/photos/1779487/pexels-photo-1779487.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+tags: ["testing", "mdx", "features"]
+draft: false
+---
+
+## 1. Admonitions Test
+
+Let's test if the custom callouts are working correctly.
+
+:::tip[Pro Tip]
+This is a tip with a custom title! It should be green.
+:::
+
+:::warning
+Warning! Don't push to production on Friday. This should be yellow.
+:::
+
+:::danger
+Critical Error. System failure imminent. This should be red.
+:::
+
+## 2. Mathematics (KaTeX)
+
+We need to ensure logic and algorithms render beautifully.
+
+**Inline Math:** The formula is  = mc^2$.
+
+**Block Math:**
+$$
+\sum_{i=1}^{n} i = \frac{n(n+1)}{2}
+$$
+**Complex Logic:**
+
+$$
+\forall x \in \mathbb{R}, \exists y \in \mathbb{R} : y > x
+$$
+
+## 3. Image Zoom Test
+
+Click the image below. It should expand (lightbox effect).
+
+![Abstract Design](https://images.pexels.com/photos/3094799/pexels-photo-3094799.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1)
+
+## 4. Code Block Test
+
+Does the copy button work?
+
+```rust
+fn main() {
+    println!("Hello, AstroDaisy!");
+}
+```

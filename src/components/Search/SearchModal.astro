@@ -28,8 +28,13 @@
   </form>
 </dialog>
 
+{import.meta.env.PROD && (
+<>
 <link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
 <script is:inline src="/pagefind/pagefind-ui.js"></script>
+
+</>
+)}
 
 <script is:inline>
   // LOGIC: Use 'astro:page-load' to run on initial load AND every navigation

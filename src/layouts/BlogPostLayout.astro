@@ -11,6 +11,8 @@ import Breadcrumbs from '../components/Common/Breadcrumbs.astro';
 import ImageZoom from '../components/Blog/ImageZoom.astro';
 import ReadingProgress from '../components/Blog/ReadingProgress.astro';
 import SeriesWidget from '../components/Blog/SeriesWidget.astro';
+import Schema from '../components/Common/Schema.astro';
+
 
 interface Props {
   title: string;
@@ -62,6 +64,7 @@ const ogImage = new URL(`/blog/${id}/og.png`, Astro.site);
 ---
 
 <BaseLayout title={title} description={description} image={ogImage.toString()}>
+  {currentPost && <Schema post={currentPost} />}
   <ReadingProgress /> 
   <div class="grid grid-cols-1 lg:grid-cols-[1fr_250px] gap-8 max-w-6xl mx-auto">
     
