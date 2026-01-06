@@ -1,24 +1,35 @@
 ---
-import type { CollectionEntry, MarkdownHeading } from 'astro:content'; 
+import type { CollectionEntry, MarkdownHeading } from 'astro:content';
 import { Image } from 'astro:assets';
 import BaseLayout from './BaseLayout.astro';
-import { formatDate, getReadingTime } from '../utils'; 
+import { formatDate, getReadingTime } from '../utils';
 import CopyCodeButton from '../components/Blog/CopyCodeButton.astro';
-import TableOfContents from '../components/Blog/TableOfContents.astro'; 
-import ShareButtons from '../components/Blog/ShareButtons.astro'; 
+import TableOfContents from '../components/Blog/TableOfContents.astro';
+import ShareButtons from '../components/Blog/ShareButtons.astro';
+
 interface Props {
   title: string;
   description: string;
   pubDate?: Date | string; 
   updatedDate?: Date | string;
   heroImage?: any;
-  headings?: MarkdownHeading[]; // New prop
-  readTimeContent?: string;     // New prop for calculating read time
+  headings?: MarkdownHeading[];
+  readTimeContent?: string;
+  tags?: string[]; // <--- New Prop
 }
 
-const { title, description, pubDate, updatedDate, heroImage, headings = [], readTimeContent = '' } = Astro.props;
+const { 
+  title, 
+  description, 
+  pubDate, 
+  updatedDate, 
+  heroImage, 
+  headings = [], 
+  readTimeContent = '',
+  tags = [] // <--- Default to empty array
+} = Astro.props;
 
-// Date logic (kept same as before)
+// Date logic
 let pubDateObj: Date | null = null;
 let updatedDateObj: Date | null = null;
 try {
@@ -31,13 +42,12 @@ const readTime = getReadingTime(readTimeContent);
 
 <BaseLayout title={title} description={description}>
   
-  {/* LAYOUT GRID: 
-      - Mobile: Single column
-      - Desktop: Main content (left) + Sidebar (right) 
-  */}
   <div class="grid grid-cols-1 lg:grid-cols-[1fr_250px] gap-8 max-w-6xl mx-auto">
     
-    <article class="min-w-0"> {heroImage && (
+    <article class="min-w-0">
+      
+      {/* ... Hero Image ... */}
+      {heroImage && (
         <div class="mb-8 rounded-box overflow-hidden shadow-xl aspect-video relative">
           {typeof heroImage === 'object' ? (
             <Image src={heroImage} alt={title} class="object-cover w-full h-full" />
@@ -50,19 +60,27 @@ const readTime = getReadingTime(readTimeContent);
       <header class="mb-10">
         <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">{title}</h1>
         
-        <div class="flex flex-wrap items-center gap-4 text-sm text-base-content/60">
+        <div class="flex flex-wrap items-center gap-4 text-sm text-base-content/60 mb-4">
           {pubDateObj && (
-            <div class="flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              <time datetime={pubDateObj.toISOString()}>{formatDate(pubDateObj)}</time>
-            </div>
+             /* ... Date Logic ... */
+             <div class="flex items-center gap-1">
+               <time datetime={pubDateObj.toISOString()}>{formatDate(pubDateObj)}</time>
+             </div>
           )}
           
           <div class="flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             <span>{readTime}</span>
           </div>
         </div>
+
+        {/* MOBILE TAGS: Visible only on lg:hidden */}
+        {tags.length > 0 && (
+          <div class="lg:hidden flex gap-2 mb-6">
+            {tags.map((tag) => (
+              <a href={`/tags/${tag}`} class="badge badge-outline hover:badge-primary">#{tag}</a>
+            ))}
+          </div>
+        )}
         
         <hr class="border-base-content/10 mt-6" />
       </header>
@@ -72,16 +90,41 @@ const readTime = getReadingTime(readTimeContent);
       </div>
 
       <CopyCodeButton /> 
+      
+      <div class="lg:hidden mt-8">
+        <ShareButtons title={title} description={description} />
+      </div>
+
       <hr class="border-base-content/10 my-8" />
       <slot name="comments" /> 
     </article>
 
-<aside class="hidden lg:block relative">
-      <div class="sticky top-24 space-y-8"> <TableOfContents headings={headings} />
+    <aside class="hidden lg:block relative">
+      <div class="sticky top-24 space-y-8">
+        
+        <TableOfContents headings={headings} />
         
         <div class="pl-4 border-l border-base-content/10">
           <ShareButtons title={title} description={description} />
         </div>
+
+        {/* DESKTOP TAGS: Rendered in Sidebar */}
+        {tags.length > 0 && (
+          <div class="pl-4 border-l border-base-content/10">
+             <h3 class="text-xs font-bold uppercase tracking-wider text-base-content/50 mb-3">Topics</h3>
+             <div class="flex flex-wrap gap-2">
+               {tags.map((tag) => (
+                 <a 
+                   href={`/tags/${tag}`} 
+                   class="badge badge-outline hover:badge-primary transition-colors cursor-pointer no-underline"
+                 >
+                   #{tag}
+                 </a>
+               ))}
+             </div>
+          </div>
+        )}
+
       </div>
     </aside>
 

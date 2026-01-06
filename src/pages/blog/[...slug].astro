@@ -23,6 +23,7 @@ const { Content, headings } = await render(post);
   heroImage={post.data.heroImage}
   headings={headings}       
   readTimeContent={post.body} 
+  tags={post.data.tags}
 >
   <Content />
 </BlogPostLayout>

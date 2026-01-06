@@ -3,19 +3,17 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostItem from '../../components/Blog/PostItem.astro';
 
-// 1. Generate paths for every unique tag found in posts
 export async function getStaticPaths() {
   const allPosts = await getCollection('blog');
   
-  // Extract all unique tags
-  const uniqueTags = [...new Set(allPosts.map((post) => post.data.tags).flat())].filter(Boolean);
+  // 1. Get all unique tags
+  const uniqueTags = [...new Set(allPosts.map((post) => post.data.tags || []).flat())];
 
+  // 2. Return a path for each tag
   return uniqueTags.map((tag) => {
-    // Filter posts for this specific tag
     const filteredPosts = allPosts.filter((post) => 
-      post.data.tags?.includes(tag as string)
+      post.data.tags?.includes(tag)
     );
-    
     return {
       params: { tag },
       props: { posts: filteredPosts },
@@ -25,21 +23,20 @@ export async function getStaticPaths() {
 
 const { tag } = Astro.params;
 const { posts } = Astro.props;
-
-// Sort by date descending
-const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
-<BaseLayout title={`Tag: ${tag}`} description={`Articles tagged with ${tag}`}>
-  <section class="max-w-4xl mx-auto">
-    <div class="mb-8 border-b border-base-content/10 pb-4 flex items-baseline gap-4">
-      <h1 class="text-4xl font-bold">#{tag}</h1>
-      <span class="text-base-content/60">{posts.length} articles</span>
-      <a href="/blog" class="ml-auto btn btn-ghost btn-sm">View All Posts</a>
+<BaseLayout title={`Tag: ${tag}`} description={`Posts tagged with ${tag}`}>
+  <section class="max-w-4xl mx-auto my-8">
+    <div class="flex items-center gap-4 mb-8 pb-4 border-b border-base-content/10">
+      <h1 class="text-3xl font-bold">
+        <span class="opacity-50 font-normal">Topic:</span> #{tag}
+      </h1>
+      <span class="badge badge-neutral">{posts.length} posts</span>
+      <a href="/blog" class="ml-auto btn btn-ghost btn-sm">Clear Filter</a>
     </div>
 
-    <ul class="grid gap-6">
-      {sortedPosts.map((post) => (
+    <ul class="grid gap-4">
+      {posts.map((post) => (
         <PostItem post={post} />
       ))}
     </ul>

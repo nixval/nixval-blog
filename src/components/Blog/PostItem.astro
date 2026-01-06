@@ -7,35 +7,51 @@ interface Props {
 }
 
 const { post } = Astro.props;
+const tags = post.data.tags || [];
 ---
 
-<li class="card bg-base-200 hover:bg-base-300 transition-colors duration-300 shadow-sm hover:shadow-md">
-  <a href={`/blog/${post.id}/`} class="card-body p-6">
-    <h3 class="card-title text-2xl font-bold text-primary group-hover:underline decoration-2 underline-offset-4">
-      {post.data.title}
-    </h3>
+<li class="card bg-base-200 hover:bg-base-300 transition-colors duration-300 shadow-sm hover:shadow-md relative group">
+  <div class="card-body p-6">
     
-    <div class="flex flex-wrap items-center gap-2 text-sm text-base-content/60 mb-2">
+    <h3 class="card-title text-2xl font-bold text-primary group-hover:underline decoration-2 underline-offset-4">
+      {/* THE MAIN LINK:
+         1. 'before:absolute before:inset-0' makes this link cover the entire card.
+         2. 'focus:outline-none' prevents double focus rings.
+      */}
+      <a href={`/blog/${post.id}/`} class="before:absolute before:inset-0 focus:outline-none">
+        {post.data.title}
+      </a>
+    </h3>
+
+    <div class="flex flex-wrap items-center gap-y-2 gap-x-4 text-sm text-base-content/60 mb-2 relative z-10">
       <time datetime={post.data.pubDate.toISOString()}>
         {formatDate(post.data.pubDate)}
       </time>
-      
-      {/* NEW: Render Tags if they exist */}
-      {post.data.tags && post.data.tags.length > 0 && (
-        <div class="flex gap-2 ml-2">
-          {post.data.tags.map((tag) => (
-            <span class="badge badge-sm badge-outline opacity-75">#{tag}</span>
+
+      {/* CLICKABLE TAGS 
+          We add 'relative z-10' to ensure they sit ON TOP of the card link.
+      */}
+      {tags.length > 0 && (
+        <div class="flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <a 
+              href={`/tags/${tag}`} 
+              class="badge badge-sm badge-outline opacity-75 hover:opacity-100 hover:badge-primary hover:scale-105 transition-all cursor-pointer no-underline"
+            >
+              #{tag}
+            </a>
           ))}
         </div>
       )}
     </div>
 
-    <p class="text-base-content/80 line-clamp-3">
+    <p class="text-base-content/80 line-clamp-3 mb-4">
       {post.data.description}
     </p>
     
-    <div class="card-actions justify-end mt-4">
-      <span class="btn btn-sm btn-outline btn-primary">Read Article</span>
+    <div class="card-actions justify-end mt-auto pointer-events-none">
+      <span class="btn btn-sm btn-outline btn-primary group-hover:btn-active">Read Article</span>
     </div>
-  </a>
+
+  </div>
 </li>
