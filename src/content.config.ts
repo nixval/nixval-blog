@@ -1,4 +1,3 @@
-// src/content.config.ts
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
@@ -11,9 +10,12 @@ const blog = defineCollection({
             pubDate: z.coerce.date(),
             updatedDate: z.coerce.date().optional(),
             heroImage: image().optional(),
-            // NEW: Add tags array support (optional to prevent breaking existing posts)
             tags: z.array(z.string()).optional(),
             draft: z.boolean().optional(),
+            
+            // NEW: Series Taxonomy
+            series: z.string().optional(),
+            seriesOrder: z.number().optional(),
         }),
 });
 

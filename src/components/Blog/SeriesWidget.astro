@@ -1,0 +1,39 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  currentPost: CollectionEntry<'blog'>;
+  seriesPosts: CollectionEntry<'blog'>[];
+  seriesName: string;
+}
+
+const { currentPost, seriesPosts, seriesName } = Astro.props;
+
+// Sort posts by seriesOrder
+const sortedPosts = seriesPosts.sort((a, b) => {
+  return (a.data.seriesOrder || 0) - (b.data.seriesOrder || 0);
+});
+---
+
+<div class="card bg-base-200 shadow-sm border border-primary/20 mb-8 not-prose">
+  <div class="card-body p-4">
+    <h3 class="text-sm font-bold uppercase tracking-wider text-base-content/60 mb-2">
+      Series: {seriesName}
+    </h3>
+    <ul class="steps steps-vertical w-full">
+      {sortedPosts.map((post) => {
+        const isCurrent = post.id === currentPost.id;
+        return (
+          <li 
+            class={`step text-left overflow-hidden ${isCurrent ? 'step-primary font-bold' : ''}`}
+            data-content={post.data.seriesOrder}
+          >
+            <a href={`/blog/${post.id}/`} class={`hover:underline block w-full truncate ${isCurrent ? 'text-primary cursor-default pointer-events-none' : 'text-base-content'}`}>
+              {post.data.title}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+</div>

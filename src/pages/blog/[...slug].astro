@@ -3,14 +3,11 @@ import { getCollection, render } from 'astro:content';
 import BlogPostLayout from '../../layouts/BlogPostLayout.astro';
 
 export async function getStaticPaths() {
-const posts = await getCollection('blog');
+  const posts = await getCollection('blog');
   
-  // LOGIC: Filter out drafts ONLY in production build
-  // In 'npm run dev', import.meta.env.PROD is false, so we see everything.
+  // Filter drafts in production
   const livePosts = posts.filter((post) => {
-    if (import.meta.env.PROD && post.data.draft === true) {
-      return false;
-    }
+    if (import.meta.env.PROD && post.data.draft === true) return false;
     return true;
   });
 
@@ -23,48 +20,33 @@ const posts = await getCollection('blog');
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
 
-// --- LOGIC: Get Previous/Next & Related Posts ---
+// --- NAVIGATION LOGIC ---
 const allPosts = (await getCollection('blog')).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
-
 const currentPostIndex = allPosts.findIndex((p) => p.id === post.id);
+const prevPost = currentPostIndex < allPosts.length - 1 ? allPosts[currentPostIndex + 1] : null;
+const nextPost = currentPostIndex > 0 ? allPosts[currentPostIndex - 1] : null;
 
-// Previous Post (Older)
-const prevPost = currentPostIndex < allPosts.length - 1 
-  ? allPosts[currentPostIndex + 1] 
-  : null;
-
-// Next Post (Newer)
-const nextPost = currentPostIndex > 0 
-  ? allPosts[currentPostIndex - 1] 
-  : null;
-
-// Related Posts Logic
-// 1. Filter out current post
-// 2. Find posts that share at least one tag
-// 3. Sort by number of shared tags (relevance), then by date
+// --- RELATED POSTS LOGIC ---
 const currentTags = post.data.tags || [];
 const relatedPosts = allPosts
-  .filter((p) => p.id !== post.id) // Exclude current
+  .filter((p) => p.id !== post.id && !p.data.draft)
   .map((p) => {
     const otherTags = p.data.tags || [];
     const sharedTags = currentTags.filter((tag) => otherTags.includes(tag));
-    return {
-      ...p,
-      sharedTagCount: sharedTags.length,
-    };
+    return { ...p, sharedTagCount: sharedTags.length };
   })
-  .filter((p) => p.sharedTagCount > 0) // Must share at least one tag
-  .sort((a, b) => {
-    // Primary sort: Most shared tags
-    if (b.sharedTagCount !== a.sharedTagCount) {
-      return b.sharedTagCount - a.sharedTagCount;
-    }
-    // Secondary sort: Recent date
-    return b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
-  })
-  .slice(0, 3); // Take top 3
+  .filter((p) => p.sharedTagCount > 0)
+  .sort((a, b) => b.sharedTagCount - a.sharedTagCount)
+  .slice(0, 3);
+
+// --- SERIES LOGIC (NEW) ---
+const seriesName = post.data.series;
+let seriesPosts: typeof allPosts = [];
+if (seriesName) {
+  seriesPosts = allPosts.filter((p) => p.data.series === seriesName && !p.data.draft);
+}
 ---
 
 <BlogPostLayout 
@@ -76,10 +58,16 @@ const relatedPosts = allPosts
   headings={headings}       
   readTimeContent={post.body}
   tags={post.data.tags}
+  
   prevPost={prevPost}
   nextPost={nextPost}
   relatedPosts={relatedPosts}
   id={post.id}
+
+  /* PASS SERIES PROPS */
+  seriesName={seriesName}
+  seriesPosts={seriesPosts}
+  currentPost={post}
 >
   <Content />
 </BlogPostLayout>
