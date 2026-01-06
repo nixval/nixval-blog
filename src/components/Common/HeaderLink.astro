@@ -1,0 +1,25 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = HTMLAttributes<'a'>;
+
+const { href, class: className, ...props } = Astro.props;
+
+const { pathname } = Astro.url;
+// Logic to determine if this link is currently active
+// It checks if the current URL starts with the href of the link
+const subpath = pathname.match(/[^\/]+/g);
+const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
+---
+
+<a 
+  href={href} 
+  class:list={[
+    className, 
+    "btn btn-sm btn-ghost font-normal", // Default style
+    { "btn-active text-primary font-bold": isActive } // Active style
+  ]} 
+  {...props}
+>
+  <slot />
+</a>

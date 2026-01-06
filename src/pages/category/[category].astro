@@ -1,0 +1,56 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostItem from '../../components/Blog/PostItem.astro';
+import Breadcrumbs from '../../components/Common/Breadcrumbs.astro';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+  const uniqueCategories = [...new Set(allPosts.map((post) => post.data.category))];
+
+  return uniqueCategories.map((category) => {
+    const filteredPosts = allPosts.filter((post) => post.data.category === category);
+    
+    // Filter Drafts
+    const livePosts = filteredPosts.filter((post) => {
+       if (import.meta.env.PROD && post.data.draft) return false;
+       return true;
+    });
+
+    return {
+      params: { category },
+      props: { posts: livePosts },
+    };
+  });
+}
+
+const { category } = Astro.params;
+const { posts } = Astro.props;
+---
+
+<BaseLayout title={`${category} Archives`} description={`Posts regarding ${category}`}>
+  <section class="max-w-7xl mx-auto px-4">
+    <Breadcrumbs />
+    
+    <div class="mb-12 border-b border-base-content/10 pb-6 capitalize">
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">{category}</h1>
+      <p class="text-lg text-base-content/60">
+        Browse all {posts.length} articles in {category}.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {posts.map((post) => (
+         <div class="h-full">
+            <PostItem post={post} />
+         </div>
+      ))}
+    </div>
+    
+    {posts.length === 0 && (
+      <div class="text-center py-20 opacity-50">
+        No posts found in this category.
+      </div>
+    )}
+  </section>
+</BaseLayout>

@@ -1,44 +1,104 @@
 ---
+import HeaderLink from './HeaderLink.astro';
 import ThemeController from './ThemeController.astro';
-import SearchModal from '../../components/Search/SearchModal.astro'; // Import the new modal
+import { SITE_TITLE } from '../../consts';
+import { getCollection } from 'astro:content';
 
-const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/about', label: 'About' },
-];
+// Fetch Categories
+const allPosts = await getCollection('blog');
+const categories = [...new Set(allPosts.map((post) => post.data.category.toLowerCase()))];
 ---
 
-<header class="sticky top-0 z-30 w-full p-4">
-  <div class="navbar bg-base-100/80 backdrop-blur-md rounded-box shadow-lg border border-base-content/5">
-    
-    <div class="navbar-start">
-      {/* ... (Mobile Menu Logic - Same as before) ... */}
-      <a href="/" class="btn btn-ghost text-xl font-bold">AstroDaisy</a>
-    </div>
+<header class="sticky top-0 z-40 w-full backdrop-blur transition-colors duration-500 lg:z-50 lg:border-b lg:border-base-content/10 bg-base-100/75">
+  <div class="max-w-7xl mx-auto">
+    <div class="navbar min-h-[4rem] px-4">
+      
+      <div class="navbar-start">
+        <a href="/" class="btn btn-ghost text-xl font-bold tracking-tight">
+          {SITE_TITLE}
+        </a>
+      </div>
 
-    <div class="navbar-center hidden lg:flex">
-      <ul class="menu menu-horizontal px-1">
-        {navLinks.map((link) => (
-          <li><a href={link.href} class="font-medium hover:text-primary">{link.label}</a></li>
-        ))}
-      </ul>
-    </div>
+      <div class="navbar-center hidden lg:flex">
+        <ul class="menu menu-horizontal px-1 gap-1 items-center">
+          <li><HeaderLink href="/">Home</HeaderLink></li>
+          <li><HeaderLink href="/about">About</HeaderLink></li>
+          
+          {/* CATEGORY DROPDOWN (Fixed) 
+              1. Use 'div' instead of 'details' for reliable Hover behavior.
+              2. 'dropdown-hover' makes it open on mouseover.
+              3. 'dropdown-end' or default aligns it.
+          */}
+          <li class="relative">
+            <div class="dropdown dropdown-hover p-0 bg-transparent hover:bg-transparent">
+              <div 
+                tabindex="0" 
+                role="button" 
+                class="btn btn-ghost font-normal rounded-btn flex items-center gap-1"
+              >
+                Categories
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-50"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+              
+              {/* DROPDOWN MENU */}
+              <ul 
+                tabindex="0" 
+                class="dropdown-content z-[99] menu p-2 shadow-xl bg-base-200 rounded-box w-52 border border-base-content/10 mt-0"
+              >
+                {/* 1. All Posts Option */}
+                <li>
+                    <a href="/blog" class="font-bold text-primary">
+                      All Posts
+                    </a>
+                </li>
+                <div class="divider my-0"></div>
 
-    <div class="navbar-end gap-2">
-      <button 
-        class="btn btn-ghost btn-circle" 
-        aria-label="Search"
-        onclick="document.getElementById('search_modal').showModal()"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-      </button>
+                {/* 2. Dynamic Categories */}
+                {categories.map((cat) => (
+                  <li>
+                    <a href={`/category/${cat}`} class="capitalize">
+                      {cat}
+                    </a>
+                  </li>
+                ))}
+                
+                {categories.length === 0 && (
+                  <li><span class="opacity-50">No categories</span></li>
+                )}
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </div>
 
-      <ThemeController />
+      <div class="navbar-end gap-2">
+        <button class="btn btn-ghost btn-circle" onclick="search_modal.showModal()" aria-label="Search">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+        </button>
+
+        <ThemeController />
+
+        {/* Mobile Hamburger (Updated with same logic) */}
+        <div class="dropdown dropdown-end lg:hidden">
+            <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
+            </div>
+            <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[99] p-2 shadow bg-base-100 rounded-box w-52">
+              <li><a href="/">Home</a></li>
+              <li><a href="/about">About</a></li>
+              <li>
+                <span class="menu-title">Categories</span>
+                <ul>
+                    <li><a href="/blog" class="font-bold text-primary">All Posts</a></li>
+                    {categories.map((cat) => (
+                        <li><a href={`/category/${cat}`} class="capitalize">{cat}</a></li>
+                    ))}
+                </ul>
+              </li>
+            </ul>
+        </div>
+      </div>
+      
     </div>
   </div>
-
-  <SearchModal />
 </header>

@@ -16,6 +16,7 @@ const blog = defineCollection({
             // NEW: Series Taxonomy
             series: z.string().optional(),
             seriesOrder: z.number().optional(),
+            category: z.string().default('others'),
         }),
 });
 

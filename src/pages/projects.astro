@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="My Projects" description="A showcase of my work.">
+  <div class="max-w-5xl mx-auto px-4 py-12">
+    
+    <h1 class="text-5xl font-extrabold mb-8 text-center">My Projects</h1>
+    <p class="text-center text-xl text-base-content/60 mb-16 max-w-2xl mx-auto">
+      Things I've built with Linux, Coffee, and Tears.
+    </p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+      
+      <div class="card bg-base-200 border border-base-content/10 shadow-xl">
+        <figure class="aspect-video bg-neutral text-neutral-content flex items-center justify-center">
+           <span class="text-4xl font-mono font-bold">VALNIX</span>
+        </figure>
+        <div class="card-body">
+          <h2 class="card-title">ValNix Dotfiles</h2>
+          <p>My personal reproducible OS configuration using Nix Flakes and Hyprland.</p>
+          <div class="card-actions justify-end mt-4">
+            <a href="https://github.com/yourusername/valnix" target="_blank" class="btn btn-primary btn-sm">View Code</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card bg-base-200 border border-base-content/10 shadow-xl">
+        <figure class="aspect-video bg-neutral text-neutral-content flex items-center justify-center">
+           <span class="text-4xl font-mono font-bold">WIKI-SCRAPPER</span>
+        </figure>
+        <div class="card-body">
+          <h2 class="card-title">Wiki Scrapper</h2>
+          <p>Python tool to offline documentation for Arch Wiki and Gentoo Wiki.</p>
+          <div class="card-actions justify-end mt-4">
+             <button class="btn btn-disabled btn-sm">Coming Soon</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="mt-20 p-8 bg-base-300 rounded-2xl text-center">
+      <h3 class="text-2xl font-bold mb-4">Want to collaborate?</h3>
+      <p class="mb-6">I am open for open-source collaborations.</p>
+      <a href="/about" class="btn btn-outline">Contact Me</a>
+    </div>
+
+  </div>
+</BaseLayout>
