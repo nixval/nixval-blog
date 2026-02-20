@@ -9,10 +9,8 @@ const { post } = Astro.props;
 
 // 1. Construct Absolute URLs (Google requires absolute links)
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
-const heroImageUrl = post.data.heroImage 
-  ? (typeof post.data.heroImage === 'string' 
-      ? (post.data.heroImage.startsWith('http') ? post.data.heroImage : new URL(post.data.heroImage, Astro.site))
-      : new URL(post.data.heroImage.src, Astro.site))
+const heroImageUrl = post.data.heroImage
+  ? new URL(post.data.heroImage.src, Astro.site)
   : new URL('/og.png', Astro.site); // Fallback image
 
 // 2. Define the Schema Object

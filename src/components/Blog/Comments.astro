@@ -3,7 +3,7 @@
 
 <section class="giscus mx-auto mt-10 max-w-4xl"></section>
 
-<script src="https://giscus.app/client.js"
+<script is:inline src="https://giscus.app/client.js"
         data-repo="username/repo-name"
         data-repo-id="R_kgD..."
         data-category="Announcements"
@@ -22,13 +22,13 @@
 <script>
   function updateGiscusTheme() {
     const theme = document.documentElement.getAttribute('data-theme');
-    const giscusFrame = document.querySelector('iframe.giscus-frame') as HTMLIFrameElement;
+    const giscusFrame = document.querySelector('iframe.giscus-frame');
     
     const giscusTheme = theme === 'dark' || theme === 'dracula' || theme === 'black' 
       ? 'dark' 
       : 'light';
 
-    if (giscusFrame && giscusFrame.contentWindow) {
+    if (giscusFrame instanceof HTMLIFrameElement && giscusFrame.contentWindow) {
       giscusFrame.contentWindow.postMessage(
         { giscus: { setConfig: { theme: giscusTheme } } },
         'https://giscus.app'

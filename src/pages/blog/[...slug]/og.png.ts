@@ -1,4 +1,5 @@
 import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 import { formatDate } from '../../../utils';
@@ -11,7 +12,7 @@ export async function getStaticPaths() {
   }));
 }
 
-export async function GET({ props }) {
+export async function GET({ props }: { props: { post: CollectionEntry<'blog'> } }) {
   const { post } = props;
   
   // FIX: Use jsDelivr CDN for reliable TTF font serving
@@ -68,7 +69,7 @@ export async function GET({ props }) {
                           style: { marginRight: 30 },
                         },
                       },
-                      ...(post.data.tags || []).slice(0, 3).map((tag) => ({
+                      ...(post.data.tags || []).slice(0, 3).map((tag: string) => ({
                         type: 'span',
                         props: {
                           children: `#${tag}`,
@@ -150,7 +151,7 @@ export async function GET({ props }) {
   const pngData = resvg.render();
   const pngBuffer = pngData.asPng();
 
-  return new Response(pngBuffer, {
+  return new Response(new Uint8Array(pngBuffer), {
     headers: {
       'Content-Type': 'image/png',
     },

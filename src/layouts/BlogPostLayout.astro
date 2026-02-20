@@ -1,5 +1,6 @@
 ---
-import type { CollectionEntry, MarkdownHeading } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import type { MarkdownHeading } from 'astro';
 import { Image } from 'astro:assets';
 import BaseLayout from './BaseLayout.astro';
 import { formatDate, getReadingTime } from '../utils';
@@ -36,7 +37,6 @@ const {
   title, 
   description, 
   pubDate, 
-  updatedDate, 
   heroImage, 
   headings = [], 
   readTimeContent = '',
@@ -52,10 +52,8 @@ const {
 
 // Date logic
 let pubDateObj: Date | null = null;
-let updatedDateObj: Date | null = null;
 try {
   if (pubDate) pubDateObj = new Date(pubDate);
-  if (updatedDate) updatedDateObj = new Date(updatedDate);
 } catch (e) {}
 const readTime = getReadingTime(readTimeContent);
 
