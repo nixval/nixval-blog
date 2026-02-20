@@ -37,19 +37,6 @@ const themes = [
 </div>
 
 <script is:inline>
-  // 1. Core Function to Apply Theme
-  function applyTheme() {
-    // Priority: LocalStorage -> Document Attribute -> System Preference
-    const savedTheme = localStorage.getItem('theme') || document.documentElement.getAttribute('data-theme');
-    
-    if (savedTheme) {
-      document.documentElement.setAttribute('data-theme', savedTheme);
-      updateActiveButton(savedTheme);
-      console.log(`[Theme] Applied: ${savedTheme}`);
-    }
-  }
-
-  // 2. Update UI (Active Button State)
   function updateActiveButton(currentTheme) {
     document.querySelectorAll('.theme-btn').forEach((btn) => {
       const btnTheme = btn.getAttribute('data-set-theme');
@@ -63,40 +50,38 @@ const themes = [
     });
   }
 
-  // 3. Setup Event Listeners (Runs on every page navigation)
-  function setupThemeListeners() {
-    const themeController = document.querySelector('.dropdown-content');
-    if (!themeController) return;
-
-    // Remove old listeners to avoid duplicates (optional safety)
-    const newController = themeController.cloneNode(true);
-    themeController.parentNode.replaceChild(newController, themeController);
-
-    newController.addEventListener('click', (e) => {
-      const target = e.target;
-      const btn = target.closest('.theme-btn');
-      
-      if (btn) {
-        const newTheme = btn.getAttribute('data-set-theme');
-        if (newTheme) {
-          document.documentElement.setAttribute('data-theme', newTheme);
-          localStorage.setItem('theme', newTheme);
-          updateActiveButton(newTheme);
-        }
-      }
-    });
+  function syncThemeState() {
+    const savedTheme = localStorage.getItem('theme') || document.documentElement.getAttribute('data-theme');
+    if (!savedTheme) return;
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateActiveButton(savedTheme);
   }
 
-  // --- LIFECYCLE HOOKS FOR VIEW TRANSITIONS ---
+  function handleThemeClick(event) {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
 
-  // Initial Load
-  applyTheme();
-  setupThemeListeners();
+    const btn = target.closest('.theme-btn');
+    if (!btn) return;
 
-  // After Swap (When you navigate to a new page)
-  // This restores the theme BEFORE the user sees the new page
-  document.addEventListener('astro:after-swap', () => {
-    applyTheme();
-    setupThemeListeners();
-  });
+    const newTheme = btn.getAttribute('data-set-theme');
+    if (!newTheme) return;
+
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateActiveButton(newTheme);
+  }
+
+  syncThemeState();
+
+  if (!window.__themeControllerBound) {
+    document.addEventListener('click', handleThemeClick);
+    window.__themeControllerBound = true;
+  }
+
+  if (!window.__themeControllerLifecycleBound) {
+    document.addEventListener('astro:after-swap', syncThemeState);
+    document.addEventListener('astro:page-load', syncThemeState);
+    window.__themeControllerLifecycleBound = true;
+  }
 </script>
