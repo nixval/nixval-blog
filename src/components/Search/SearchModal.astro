@@ -37,9 +37,7 @@
 )}
 
 <script is:inline>
-  // LOGIC: Use 'astro:page-load' to run on initial load AND every navigation
-  document.addEventListener('astro:page-load', () => {
-    
+  function initSearchModal() {
     const container = document.querySelector("#pagefind-container");
     const warning = document.querySelector("#pagefind-dev-warning");
     
@@ -66,17 +64,27 @@
     } catch (e) {
       console.error('[Search] Error initializing:', e);
     }
-  });
+  }
 
-  // Hotkey Listener (CMD+K)
-  // We attach this to document, so it persists across navigations automatically
-  document.addEventListener('keydown', (e) => {
+  function handleSearchHotkey(e) {
     if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
       e.preventDefault();
       const modal = document.getElementById('search_modal');
       if (modal) modal.showModal();
     }
-  });
+  }
+
+  initSearchModal();
+
+  if (!window.__searchModalPageLoadBound) {
+    document.addEventListener('astro:page-load', initSearchModal);
+    window.__searchModalPageLoadBound = true;
+  }
+
+  if (!window.__searchModalHotkeyBound) {
+    document.addEventListener('keydown', handleSearchHotkey);
+    window.__searchModalHotkeyBound = true;
+  }
 </script>
 
 <style is:global>

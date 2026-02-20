@@ -10,7 +10,7 @@
 </div>
 
 <script>
-  function initProgressBar() {
+  function updateProgressBar() {
     const bar = document.getElementById('reading-progress-bar');
     if (!bar) return;
 
@@ -28,17 +28,14 @@
       const scrolled = (scrollTop / scrollHeight) * 100;
       bar.style.width = `${scrolled}%`;
     };
-
-    // Listen to scroll events
-    window.addEventListener('scroll', updateProgress, { passive: true });
-    
-    // Initial calculation
     updateProgress();
   }
 
-  // Init on load
-  initProgressBar();
+  if (!document.documentElement.dataset.readingProgressBound) {
+    window.addEventListener('scroll', updateProgressBar, { passive: true });
+    document.addEventListener('astro:page-load', updateProgressBar);
+    document.documentElement.dataset.readingProgressBound = 'true';
+  }
 
-  // Re-init on navigation (View Transitions)
-  document.addEventListener('astro:page-load', initProgressBar);
+  updateProgressBar();
 </script>

@@ -11,26 +11,31 @@
 </button>
 
 <script>
-  function initScrollToTop() {
+  function updateScrollToTopVisibility() {
     const btn = document.getElementById('scroll-to-top');
     if (!btn) return;
 
-    // Show/Hide logic
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 300) {
-        btn.classList.remove('translate-y-20', 'opacity-0');
-      } else {
-        btn.classList.add('translate-y-20', 'opacity-0');
-      }
-    });
-
-    // Click logic
-    btn.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+    if (window.scrollY > 300) {
+      btn.classList.remove('translate-y-20', 'opacity-0');
+    } else {
+      btn.classList.add('translate-y-20', 'opacity-0');
+    }
   }
 
-  // Init
-  initScrollToTop();
-  document.addEventListener('astro:page-load', initScrollToTop);
+  function handleScrollToTopClick(event: MouseEvent) {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const button = target.closest('#scroll-to-top');
+    if (!button) return;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  if (!document.documentElement.dataset.scrollToTopBound) {
+    window.addEventListener('scroll', updateScrollToTopVisibility, { passive: true });
+    document.addEventListener('click', handleScrollToTopClick);
+    document.addEventListener('astro:page-load', updateScrollToTopVisibility);
+    document.documentElement.dataset.scrollToTopBound = 'true';
+  }
+
+  updateScrollToTopVisibility();
 </script>

@@ -59,9 +59,9 @@
     });
   }
 
-  // Init on load
   addCopyButtons();
-
-  // Re-init on View Transitions (if enabled later)
-  document.addEventListener('astro:page-load', addCopyButtons);
+  if (!document.documentElement.dataset.copyCodeBound) {
+    document.addEventListener('astro:page-load', addCopyButtons);
+    document.documentElement.dataset.copyCodeBound = 'true';
+  }
 </script>
