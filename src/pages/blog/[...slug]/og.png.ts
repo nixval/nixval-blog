@@ -1,5 +1,6 @@
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
+import { readFile } from 'node:fs/promises';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 import { formatDate } from '../../../utils';
@@ -14,16 +15,9 @@ export async function getStaticPaths() {
 
 export async function GET({ props }: { props: { post: CollectionEntry<'blog'> } }) {
   const { post } = props;
-  
-  // FIX: Use jsDelivr CDN for reliable TTF font serving
-  // This prevents the "Unsupported OpenType signature" error caused by GitHub raw links
-  const fontData = await fetch(
-    'https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-700-normal.ttf'
-  ).then((res) => res.arrayBuffer());
 
-  const regularFontData = await fetch(
-    'https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-400-normal.ttf'
-  ).then((res) => res.arrayBuffer());
+  const fontData = await readFile(new URL('../../../../public/fonts/atkinson-bold.woff', import.meta.url));
+  const regularFontData = await readFile(new URL('../../../../public/fonts/atkinson-regular.woff', import.meta.url));
 
   const svg = await satori(
     {
@@ -132,13 +126,13 @@ export async function GET({ props }: { props: { post: CollectionEntry<'blog'> } 
       height: 630,
       fonts: [
         {
-          name: 'Inter',
+          name: 'Atkinson',
           data: fontData,
           weight: 700,
           style: 'normal',
         },
         {
-          name: 'Inter',
+          name: 'Atkinson',
           data: regularFontData,
           weight: 400,
           style: 'normal',
