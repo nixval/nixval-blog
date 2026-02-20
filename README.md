@@ -1,62 +1,71 @@
-# Astro Starter Kit: Blog
+# AstroDaisy
 
-```sh
-pnpm create astro@latest -- --template blog
+A polished Astro + DaisyUI blog template with multi-theme support, MD/MDX content collections, OG image generation, search, and production-ready defaults.
+
+[![Use this template](https://img.shields.io/badge/GitHub-Use_this_template-2ea44f?logo=github)](https://github.com/nixval/nixval-blog/generate)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/nixval/nixval-blog)
+
+## Quick Start
+
+```bash
+pnpm install
+pnpm dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Build and preview:
 
-Features:
-
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and OpenGraph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-├── public/
-├── src/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
+```bash
+pnpm build
+pnpm preview
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Use This as a GitHub Template
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+1. Open the repo on GitHub.
+2. Go to `Settings`.
+3. Enable `Template repository`.
+4. Users can now click `Use this template` and create their own repo with a clean history.
 
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
+Direct template URL:
 
-Any static assets, like images, can be placed in the `public/` directory.
+- https://github.com/nixval/nixval-blog/generate
 
-## 🧞 Commands
+## Deploy to Vercel
 
-All commands are run from the root of the project, from a terminal:
+For most Astro static projects, Vercel deploy is zero-config.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+- One-click deploy: https://vercel.com/new/clone?repository-url=https://github.com/nixval/nixval-blog
+- Or import the generated template repo in Vercel dashboard.
 
-## 👀 Want to learn more?
+## Stack
 
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- Astro 5
+- DaisyUI 5 + Tailwind CSS 4
+- MD/MDX content collections
+- Pagefind search
+- Satori + Resvg OG images
 
-## Credit
+## Node / Package Manager
 
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+- Node: `>=22 <23`
+- pnpm: `10.28.1`
+
+Use `.nvmrc`:
+
+```bash
+nvm use
+```
+
+## Commands
+
+| Command | Action |
+| --- | --- |
+| `pnpm install` | Install dependencies |
+| `pnpm dev` | Start dev server at `localhost:4321` |
+| `pnpm build` | Build production output to `dist/` |
+| `pnpm preview` | Preview production build |
+| `pnpm astro check` | Run Astro type/content checks |
+
+## License
+
+Choose and add your preferred license in this repo before publishing publicly.
