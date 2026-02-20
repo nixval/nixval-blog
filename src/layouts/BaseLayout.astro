@@ -22,11 +22,18 @@ const { title, description, image } = Astro.props;
   
   <ClientRouter />
 
-  <body class="flex flex-col min-h-screen antialiased overflow-x-hidden">
+  <body class="flex min-h-screen flex-col overflow-x-hidden bg-base-100 text-base-content antialiased">
+    <div aria-hidden="true" class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+      <div class="aurora-layer aurora-layer-primary"></div>
+      <div class="aurora-layer aurora-layer-secondary"></div>
+      <div class="aurora-layer aurora-layer-accent"></div>
+      <div class="noise-overlay"></div>
+    </div>
+
     <Header />
     
-    <main class="flex-grow container mx-auto px-4 py-8">
-      <div transition:animate="fade">
+    <main class="layout-shell mx-auto w-full max-w-7xl flex-grow px-4 pb-12 pt-6 md:pt-8">
+      <div class="page-reveal" transition:animate="fade">
         <slot />
       </div>
     </main>
@@ -36,20 +43,11 @@ const { title, description, image } = Astro.props;
     <SearchModal />
 
     <script is:inline>
-      // 1. Log Lifecycle Events
       document.addEventListener('astro:before-preparation', () => {
-        console.log('🚀 [Router] Navigating...');
-        // Show loading bar
         document.documentElement.classList.add('is-loading');
       });
 
-      document.addEventListener('astro:after-swap', () => {
-        console.log('🔄 [Router] Content Swapped (Theme should be restored now)');
-      });
-
       document.addEventListener('astro:page-load', () => {
-        console.log('✅ [Router] Page Loaded (Scripts Initialized)');
-        // Hide loading bar
         document.documentElement.classList.remove('is-loading');
       });
     </script>

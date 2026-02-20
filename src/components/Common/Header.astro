@@ -9,18 +9,18 @@ const allPosts = await getCollection('blog');
 const categories = [...new Set(allPosts.map((post) => post.data.category.toLowerCase()))];
 ---
 
-<header class="sticky top-0 z-40 w-full backdrop-blur transition-colors duration-500 lg:z-50 lg:border-b lg:border-base-content/10 bg-base-100/75">
-  <div class="max-w-7xl mx-auto">
-    <div class="navbar min-h-[4rem] px-4">
+<header class="sticky top-3 z-50 px-3">
+  <div class="mx-auto max-w-7xl">
+    <div class="navbar min-h-[4.25rem] rounded-2xl border border-base-content/10 bg-base-100/70 px-2 shadow-lg shadow-base-content/5 backdrop-blur-xl md:px-4">
       
       <div class="navbar-start">
-        <a href="/" class="btn btn-ghost text-xl font-bold tracking-tight">
+        <a href="/" class="btn btn-ghost rounded-xl text-lg font-black tracking-tight md:text-xl">
           {SITE_TITLE}
         </a>
       </div>
 
       <div class="navbar-center hidden lg:flex">
-        <ul class="menu menu-horizontal px-1 gap-1 items-center">
+        <ul class="menu menu-horizontal items-center gap-1 rounded-full border border-base-content/10 bg-base-100/60 px-2 py-1">
           <li><HeaderLink href="/">Home</HeaderLink></li>
           <li><HeaderLink href="/about">About</HeaderLink></li>
           
@@ -41,9 +41,9 @@ const categories = [...new Set(allPosts.map((post) => post.data.category.toLower
               </div>
               
               {/* DROPDOWN MENU */}
-              <ul 
+              <ul
                 tabindex="0" 
-                class="dropdown-content z-[99] menu p-2 shadow-xl bg-base-200 rounded-box w-52 border border-base-content/10 mt-0"
+                class="dropdown-content z-[99] mt-2 w-56 rounded-box border border-base-content/10 bg-base-100/95 p-2 shadow-xl backdrop-blur-lg"
               >
                 {/* 1. All Posts Option */}
                 <li>
@@ -72,23 +72,37 @@ const categories = [...new Set(allPosts.map((post) => post.data.category.toLower
       </div>
 
       <div class="navbar-end gap-2">
+        <div class="hidden items-center gap-1 rounded-full border border-base-content/10 bg-base-100/60 p-1 sm:flex">
+          <button
+            class="btn btn-ghost btn-circle btn-sm interactive-lift"
+            type="button"
+            onclick="document.getElementById('search_modal')?.showModal()"
+            aria-label="Search"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+          </button>
+          <ThemeController />
+        </div>
+
         <button
-          class="btn btn-ghost btn-circle"
+          class="btn btn-ghost btn-circle btn-sm interactive-lift sm:hidden"
           type="button"
           onclick="document.getElementById('search_modal')?.showModal()"
           aria-label="Search"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
         </button>
 
-        <ThemeController />
+        <div class="sm:hidden">
+          <ThemeController />
+        </div>
 
         {/* Mobile Hamburger (Updated with same logic) */}
         <div class="dropdown dropdown-end lg:hidden">
             <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
             </div>
-            <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[99] p-2 shadow bg-base-100 rounded-box w-52">
+            <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[99] w-56 rounded-box border border-base-content/10 bg-base-100/95 p-2 shadow-xl backdrop-blur-lg">
               <li><a href="/">Home</a></li>
               <li><a href="/about">About</a></li>
               <li>

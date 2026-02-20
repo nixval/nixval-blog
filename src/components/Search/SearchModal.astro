@@ -3,12 +3,15 @@
 ---
 
 <dialog id="search_modal" class="modal">
-  <div class="modal-box w-11/12 max-w-2xl bg-base-100 h-[60vh] flex flex-col">
+  <div class="modal-box flex h-[72vh] w-[min(92vw,48rem)] max-w-3xl flex-col rounded-2xl border border-base-content/10 bg-base-100/95 p-5 shadow-2xl backdrop-blur-xl md:h-[68vh] md:p-6">
     <form method="dialog">
-      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+      <button class="btn btn-sm btn-circle btn-ghost interactive-lift absolute right-2 top-2">✕</button>
     </form>
     
-    <h3 class="font-bold text-lg mb-4">Search</h3>
+    <div class="mb-4 flex items-center justify-between pr-10">
+      <h3 class="text-lg font-bold">Search</h3>
+      <span class="hidden rounded-lg border border-base-content/15 bg-base-200/60 px-2 py-1 text-[11px] font-semibold tracking-wide text-base-content/55 sm:inline">Ctrl/Cmd + K</span>
+    </div>
     
     <div id="pagefind-dev-warning" class="hidden alert alert-warning mb-4 shadow-sm">
       <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
@@ -21,7 +24,7 @@
       </div>
     </div>
     
-    <div id="pagefind-container" class="flex-grow overflow-y-auto"></div>
+    <div id="pagefind-container" class="flex-grow overflow-y-auto pr-1"></div>
   </div>
   <form method="dialog" class="modal-backdrop">
     <button>close</button>

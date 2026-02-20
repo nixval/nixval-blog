@@ -17,11 +17,11 @@ const heroImage = post.data.heroImage;
   1. Added 'h-full' to the <li> class so it fills the Grid cell.
   2. The card is a flex container by default (daisyUI).
 */}
-<li class={`card bg-base-200 hover:bg-base-300 transition-colors duration-300 shadow-sm hover:shadow-md relative group h-full ${isDraft ? 'opacity-70 border-2 border-warning border-dashed' : ''}`}>
+<li class={`group relative h-full overflow-hidden rounded-2xl border border-base-content/10 bg-base-100/70 shadow-lg shadow-base-content/5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-xl ${isDraft ? 'opacity-70 border-2 border-warning border-dashed' : ''}`}>
   
   {/* HERO IMAGE */}
   {heroImage && (
-    <figure class="aspect-video w-full overflow-hidden rounded-t-box shrink-0">
+    <figure class="aspect-[16/10] w-full overflow-hidden shrink-0">
       {typeof heroImage === 'object' ? (
         <Image 
           src={heroImage} 
@@ -44,18 +44,18 @@ const heroImage = post.data.heroImage;
     1. 'flex flex-col' ensures vertical stacking.
     2. 'h-full' makes the body fill the card.
   */}
-  <div class="card-body p-6 flex flex-col h-full">
+  <div class="card-body flex h-full flex-col p-6">
     
-    <h3 class="card-title text-2xl font-bold text-primary group-hover:underline decoration-2 underline-offset-4 mb-2">
+    <h3 class="card-title mb-2 text-2xl font-black leading-tight text-base-content">
       <a href={`/blog/${post.id}/`} class="before:absolute before:inset-0 focus:outline-none">
-        <span transition:name={`title-${post.id}`}>
+        <span transition:name={`title-${post.id}`} class="transition-colors duration-300 group-hover:text-primary">
           {post.data.title}
         </span>
       </a>
       {isDraft && <span class="badge badge-warning font-mono text-xs z-20 relative">DRAFT</span>}
     </h3>
 
-    <div class="flex flex-wrap items-center gap-y-2 gap-x-4 text-sm text-base-content/60 mb-4 relative z-10">
+    <div class="relative z-10 mb-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-base-content/60">
       <time datetime={post.data.pubDate.toISOString()}>
         {formatDate(post.data.pubDate)}
       </time>
@@ -65,7 +65,7 @@ const heroImage = post.data.heroImage;
           {tags.map((tag) => (
             <a 
               href={`/tags/${tag}`} 
-              class="badge badge-sm badge-outline opacity-75 hover:opacity-100 hover:badge-primary hover:scale-105 transition-all cursor-pointer no-underline"
+              class="badge badge-sm border-base-content/20 bg-base-100/70 opacity-80 transition-all hover:scale-105 hover:border-primary/40 hover:opacity-100"
             >
               #{tag}
             </a>
@@ -78,7 +78,7 @@ const heroImage = post.data.heroImage;
        1. 'flex-grow' pushes the action button to the bottom.
        2. 'mb-4' gives breathing room before the button.
     */}
-    <p class="text-base-content/80 line-clamp-3 mb-4 flex-grow">
+    <p class="mb-4 line-clamp-3 flex-grow text-base-content/75">
       {post.data.description}
     </p>
   </div>

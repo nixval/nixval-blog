@@ -1,38 +1,96 @@
 ---
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PostItem from '../components/Blog/PostItem.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts'; // Ensure you have this file or replace with strings
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { formatDate } from '../utils';
 
 // Fetch latest 5 posts
 const posts = (await getCollection('blog'))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 5);
+
+const [featuredPost, ...latestPosts] = posts;
 ---
 
 <BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
-  
-  <section class="py-12 md:py-20 text-center">
-    <h1 class="text-5xl font-black mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-      Hello, AstroDaisy!
+
+  <section class="relative overflow-hidden rounded-3xl border border-base-content/10 bg-base-100/70 p-8 shadow-xl shadow-base-content/5 backdrop-blur-sm md:p-12">
+    <div class="pointer-events-none absolute -left-10 top-0 h-40 w-40 rounded-full bg-primary/20 blur-3xl"></div>
+    <div class="pointer-events-none absolute -right-6 bottom-0 h-40 w-40 rounded-full bg-secondary/20 blur-3xl"></div>
+
+    <p class="badge badge-primary badge-outline mb-5 font-medium">Template Ready</p>
+    <h1 class="max-w-4xl text-4xl font-black leading-tight tracking-tight md:text-6xl">
+      Build expressive content sites with Astro + DaisyUI themes.
     </h1>
-    <p class="text-xl text-base-content/80 max-w-2xl mx-auto mb-8">
-      An opinionated, beautiful, and functional blog template built with Astro, Tailwind v4, and DaisyUI v5.
+    <p class="mt-5 max-w-2xl text-base text-base-content/75 md:text-lg">
+      A polished editorial starter with markdown-first workflow, strong defaults, and full multi-theme compatibility out of the box.
     </p>
-    <div class="flex gap-4 justify-center">
-      <a href="/blog" class="btn btn-primary">Read Blog</a>
-      <a href="/about" class="btn btn-neutral">About Me</a>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a href="/blog" class="btn btn-primary btn-md md:btn-lg">Explore Articles</a>
+      <a href="/projects" class="btn btn-ghost border border-base-content/20 btn-md md:btn-lg">View Projects</a>
     </div>
   </section>
 
-  <section>
-    <div class="flex items-center justify-between mb-6">
-      <h2 class="text-3xl font-bold">Latest Writing</h2>
-      <a href="/blog" class="link link-primary">View all posts →</a>
+  {featuredPost && (
+    <section class="mt-10">
+      <div class="mb-5 flex items-center justify-between">
+        <h2 class="text-2xl font-bold tracking-tight md:text-3xl">Featured Post</h2>
+      </div>
+
+      <article class="group grid gap-0 overflow-hidden rounded-3xl border border-base-content/10 bg-base-100/75 shadow-xl shadow-base-content/5 backdrop-blur-sm lg:grid-cols-[1.15fr_1fr]">
+        {featuredPost.data.heroImage && (
+          <a href={`/blog/${featuredPost.id}/`} class="block overflow-hidden">
+            {typeof featuredPost.data.heroImage === 'object' ? (
+              <Image
+                src={featuredPost.data.heroImage}
+                alt={featuredPost.data.title}
+                width={1280}
+                height={720}
+                class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+            ) : (
+              <img
+                src={featuredPost.data.heroImage}
+                alt={featuredPost.data.title}
+                class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+            )}
+          </a>
+        )}
+
+        <div class="flex flex-col justify-between p-7 md:p-9">
+          <div>
+            <p class="mb-3 text-sm font-medium uppercase tracking-wide text-base-content/60">
+              {formatDate(featuredPost.data.pubDate)}
+            </p>
+            <h3 class="text-2xl font-black leading-tight md:text-3xl">
+              <a href={`/blog/${featuredPost.id}/`} class="transition-colors hover:text-primary">
+                {featuredPost.data.title}
+              </a>
+            </h3>
+            <p class="mt-4 text-base-content/75">
+              {featuredPost.data.description}
+            </p>
+          </div>
+
+          <div class="mt-8">
+            <a href={`/blog/${featuredPost.id}/`} class="btn btn-primary btn-sm md:btn-md">Read Featured Story</a>
+          </div>
+        </div>
+      </article>
+    </section>
+  )}
+
+  <section class="mt-12">
+    <div class="mb-6 flex items-center justify-between">
+      <h2 class="text-2xl font-bold tracking-tight md:text-3xl">Latest Writing</h2>
+      <a href="/blog" class="btn btn-ghost btn-sm border border-base-content/15">View all posts</a>
     </div>
     
-    <ul class="grid gap-6 md:grid-cols-1">
-      {posts.map((post) => (
+    <ul class="grid gap-6 lg:grid-cols-2">
+      {latestPosts.map((post) => (
         <PostItem post={post} />
       ))}
     </ul>

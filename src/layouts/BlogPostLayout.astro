@@ -64,9 +64,9 @@ const ogImage = new URL(`/blog/${id}/og.png`, Astro.site);
 <BaseLayout title={title} description={description} image={ogImage.toString()}>
   {currentPost && <Schema post={currentPost} />}
   <ReadingProgress /> 
-  <div class="grid grid-cols-1 lg:grid-cols-[1fr_250px] gap-8 max-w-6xl mx-auto">
+  <div class="mx-auto grid max-w-6xl grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_280px]">
     
-    <article class="min-w-0">
+    <article class="min-w-0 rounded-3xl border border-base-content/10 bg-base-100/75 p-5 shadow-xl shadow-base-content/5 backdrop-blur-sm md:p-8">
       
       <Breadcrumbs />
 
@@ -75,7 +75,7 @@ const ogImage = new URL(`/blog/${id}/og.png`, Astro.site);
           The 'w-full object-cover' ensures the image fills the container nicely.
       */}
       {heroImage && (
-        <div class="mb-8 rounded-box overflow-hidden shadow-xl aspect-video relative bg-base-200">
+        <div class="relative mb-8 aspect-video overflow-hidden rounded-2xl bg-base-200 shadow-xl">
           {typeof heroImage === 'object' ? (
             <Image 
               src={heroImage} 
@@ -97,7 +97,7 @@ const ogImage = new URL(`/blog/${id}/og.png`, Astro.site);
 
       <header class="mb-10 text-center md:text-left">
         <h1 
-          class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight" 
+          class="mb-4 text-4xl font-black leading-tight tracking-tight md:text-5xl" 
           transition:name={`title-${id}`}
         >
           {title}
@@ -119,14 +119,14 @@ const ogImage = new URL(`/blog/${id}/og.png`, Astro.site);
 
         {/* Mobile Tags */}
         {tags.length > 0 && (
-          <div class="lg:hidden flex flex-wrap justify-center md:justify-start gap-2 mb-6">
+          <div class="mb-6 flex flex-wrap justify-center gap-2 md:justify-start lg:hidden">
             {tags.map((tag) => (
-              <a href={`/tags/${tag}`} class="badge badge-outline hover:badge-primary">#{tag}</a>
+              <a href={`/tags/${tag}`} class="badge badge-outline border-base-content/20 bg-base-100/80 hover:badge-primary">#{tag}</a>
             ))}
           </div>
         )}
         
-        <hr class="border-base-content/10 mt-6" />
+        <hr class="mt-6 border-base-content/10" />
       </header>
 
 {seriesName && currentPost && seriesPosts.length > 0 && (
@@ -137,33 +137,33 @@ const ogImage = new URL(`/blog/${id}/og.png`, Astro.site);
     />
   )}
 
-      <div class="prose prose-lg max-w-none prose-headings:font-bold prose-a:text-primary hover:prose-a:text-primary-focus">
+      <div class="prose prose-lg max-w-none prose-headings:font-bold prose-a:text-primary">
         <slot />
       </div>
 
       <CopyCodeButton /> 
       
-      <div class="lg:hidden mt-8">
+      <div class="mt-8 lg:hidden">
         <ShareButtons title={title} description={description} />
       </div>
 
-      <hr class="border-base-content/10 my-8" />
+      <hr class="my-8 border-base-content/10" />
 
       {/* Navigation Links */}
-      <nav class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+      <nav class="mb-12 grid grid-cols-1 gap-4 md:grid-cols-2">
         {prevPost ? (
-          <a href={`/blog/${prevPost.id}/`} class="group flex flex-col p-4 rounded-xl border border-base-content/10 hover:border-primary/50 hover:bg-base-200/50 transition-all text-right md:text-left">
-            <span class="text-xs font-bold text-base-content/50 uppercase tracking-wider mb-1">« Previous Article</span>
-            <span class="font-bold text-lg group-hover:text-primary transition-colors line-clamp-2">{prevPost.data.title}</span>
+          <a href={`/blog/${prevPost.id}/`} class="group flex flex-col rounded-2xl border border-base-content/10 bg-base-100/70 p-5 text-right transition-all hover:-translate-y-0.5 hover:border-primary/35 hover:bg-base-200/60 md:text-left">
+            <span class="mb-1 text-xs font-bold uppercase tracking-wider text-base-content/50">« Previous Article</span>
+            <span class="line-clamp-2 text-lg font-bold transition-colors group-hover:text-primary">{prevPost.data.title}</span>
           </a>
         ) : (
           <div class="hidden md:block"></div>
         )}
 
         {nextPost ? (
-          <a href={`/blog/${nextPost.id}/`} class="group flex flex-col p-4 rounded-xl border border-base-content/10 hover:border-primary/50 hover:bg-base-200/50 transition-all text-right">
-            <span class="text-xs font-bold text-base-content/50 uppercase tracking-wider mb-1">Next Article »</span>
-            <span class="font-bold text-lg group-hover:text-primary transition-colors line-clamp-2">{nextPost.data.title}</span>
+          <a href={`/blog/${nextPost.id}/`} class="group flex flex-col rounded-2xl border border-base-content/10 bg-base-100/70 p-5 text-right transition-all hover:-translate-y-0.5 hover:border-primary/35 hover:bg-base-200/60">
+            <span class="mb-1 text-xs font-bold uppercase tracking-wider text-base-content/50">Next Article »</span>
+            <span class="line-clamp-2 text-lg font-bold transition-colors group-hover:text-primary">{nextPost.data.title}</span>
           </a>
         ) : (
           <div></div>
@@ -172,29 +172,29 @@ const ogImage = new URL(`/blog/${id}/og.png`, Astro.site);
 
       <RelatedPosts posts={relatedPosts} />
 
-      <div class="mt-12">
-        <h3 class="text-lg font-bold mb-4 border-b border-base-content/10 pb-2">Discussion</h3>
+      <div class="mt-12 rounded-2xl border border-base-content/10 bg-base-100/65 p-6">
+        <h3 class="mb-4 border-b border-base-content/10 pb-2 text-lg font-bold">Discussion</h3>
         <slot name="comments" />
       </div>
 
     </article>
 
-    <aside class="hidden lg:block relative">
-      <div class="sticky top-24 space-y-8">
+    <aside class="relative hidden lg:block">
+      <div class="sticky top-24 space-y-6">
         <TableOfContents headings={headings} />
         
-        <div class="pl-4 border-l border-base-content/10">
+        <div class="rounded-2xl border border-base-content/10 bg-base-100/70 p-4">
           <ShareButtons title={title} description={description} />
         </div>
 
         {tags.length > 0 && (
-          <div class="pl-4 border-l border-base-content/10">
-             <h3 class="text-xs font-bold uppercase tracking-wider text-base-content/50 mb-3">Topics</h3>
+          <div class="rounded-2xl border border-base-content/10 bg-base-100/70 p-4">
+             <h3 class="mb-3 text-xs font-bold uppercase tracking-wider text-base-content/50">Topics</h3>
              <div class="flex flex-wrap gap-2">
                {tags.map((tag) => (
                  <a 
                    href={`/tags/${tag}`} 
-                   class="badge badge-outline hover:badge-primary transition-colors cursor-pointer no-underline"
+                   class="badge badge-outline border-base-content/20 bg-base-100/85 transition-colors hover:badge-primary"
                  >
                    #{tag}
                  </a>

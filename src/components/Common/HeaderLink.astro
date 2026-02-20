@@ -16,8 +16,8 @@ const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
   href={href} 
   class:list={[
     className, 
-    "btn btn-sm btn-ghost font-normal", // Default style
-    { "btn-active text-primary font-bold": isActive } // Active style
+    "btn btn-sm btn-ghost min-h-9 rounded-full px-4 font-medium transition-all duration-200", // Default style
+    { "btn-active text-primary font-bold shadow-sm": isActive } // Active style
   ]} 
   {...props}
 >

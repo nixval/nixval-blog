@@ -12,14 +12,14 @@ const tocHeadings = headings.filter((h) => h.depth > 1 && h.depth <= 3);
 ---
 
 {tocHeadings.length > 0 && (
-  <nav class="toc-container p-4 bg-base-200/50 rounded-xl border border-base-content/5 text-sm">
-    <h2 class="font-bold mb-3 text-base-content/70 uppercase tracking-wider text-xs">On This Page</h2>
+  <nav class="toc-container rounded-2xl border border-base-content/10 bg-base-100/70 p-4 text-sm shadow-lg shadow-base-content/5">
+    <h2 class="mb-3 text-xs font-bold uppercase tracking-wider text-base-content/60">On This Page</h2>
     <ul class="flex flex-col gap-2">
       {tocHeadings.map((heading) => (
         <li class={`toc-item ${heading.depth === 3 ? 'pl-4' : ''}`}>
           <a 
             href={`#${heading.slug}`} 
-            class="link link-hover text-base-content/80 hover:text-primary transition-colors block truncate"
+            class="block truncate rounded-lg px-2 py-1 text-base-content/75 transition-colors hover:bg-base-200/60 hover:text-primary"
           >
             {heading.text}
           </a>
